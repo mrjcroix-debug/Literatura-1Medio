@@ -1337,17 +1337,17 @@
     const RESULTS_STORAGE_KEY = `etec-literatura-student-records-v1`;
     const GOOGLE_FORM_RESPONSE_URL = `https://docs.google.com/forms/d/e/1FAIpQLSekshsmNRDCAaJ-_kEqIaf-cbou1zwdyZraWfkigPDs-7VM5w/formResponse`;
     const GOOGLE_FORM_ENTRY_IDS = {
-      id: `entry.513263938`,
-      name: `entry.1386401146`,
-      turma: `entry.618162929`,
-      scorePct: `entry.437763456`,
-      mencao: `entry.356674803`,
-      durationSec: `entry.297992542`,
-      durationStr: `entry.215533379`,
-      startTime: `entry.833544290`,
-      endTime: `entry.933698642`,
-      diagSummary: `entry.1994263660`,
-      topicErrors: `entry.768678869`
+      id: `entry.219137183`,
+      name: `entry.472652460`,
+      turma: `entry.1066244006`,
+      scorePct: `entry.1718616897`,
+      mencao: `entry.443444655`,
+      durationSec: `entry.825404166`,
+      durationStr: `entry.1346817787`,
+      startTime: `entry.996766211`,
+      endTime: `entry.2003131105`,
+      diagSummary: `entry.905641367`,
+      topicErrors: `entry.1597115962`
     };
     let studentRecords = [...INITIAL_SAMPLE_RESULTS];
     let pendingSheetRecords = [];
@@ -1555,6 +1555,19 @@
         form.action = endpoint.href;
         form.target = frameName;
         form.hidden = true;
+
+        const hiddenFields = {
+          fvv: `1`,
+          pageHistory: `0`,
+          submissionTimestamp: `-1`
+        };
+        Object.entries(hiddenFields).forEach(([name, value]) => {
+          const input = document.createElement(`input`);
+          input.type = `hidden`;
+          input.name = name;
+          input.value = value;
+          form.appendChild(input);
+        });
 
         const values = {
           [GOOGLE_FORM_ENTRY_IDS.id]: record.id,
@@ -1971,7 +1984,7 @@
       if (saveResult.formError) {
         showResultSaveStatus(`Resultado guardado localmente, mas não enviado ao Google Forms: ${saveResult.formError.message}`, `error`);
       } else if (GOOGLE_FORM_RESPONSE_URL) {
-        showResultSaveStatus(`Envio encaminhado ao Google Forms. Confira se apareceu na planilha vinculada.`, `success`);
+        showResultSaveStatus(`Solicitação enviada ao Google Forms. Confira se os dados apareceram na aba Respostas.`, `info`);
       } else if (saveResult.storageErrors.length > 0) {
         showResultSaveStatus(`Atenção: não foi possível salvar o resultado ${saveResult.storageErrors.join(` e `)}.`, `error`);
       } else {
