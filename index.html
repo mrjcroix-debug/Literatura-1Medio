@@ -1339,6 +1339,7 @@
     // 3. RUNTIME STATE
     // =========================================================================
     const RESULTS_STORAGE_KEY = `etec-literatura-student-records-v1`;
+    const GOOGLE_APPS_SCRIPT_WEB_APP_URL = ``;
     const GOOGLE_FORM_VIEW_URL = `https://docs.google.com/forms/d/e/1FAIpQLSekshsmNRDCAaJ-_kEqIaf-cbou1zwdyZraWfkigPDs-7VM5w/viewform`;
     const GOOGLE_FORM_ENTRY_IDS = {
       id: `entry.513263938`,
@@ -1526,6 +1527,79 @@
 
     async function persistState() {
       return savePersistedState();
+    }
+
+    function submitRecordToAppsScript(record) {
+      if (!GOOGLE_APPS_SCRIPT_WEB_APP_URL) {
+        return Promise.reject(new Error(`O endpoint público do Apps Script ainda não foi configurado.`));
+      }
+
+      let endpoint;
+      try {
+        endpoint = new URL(GOOGLE_APPS_SCRIPT_WEB_APP_URL);
+      } catch (err) {
+        return Promise.reject(new Error(`O endereço do Apps Script é inválido.`));
+      }
+      if (
+        endpoint.protocol !== `https:` ||
+        endpoint.hostname !== `script.google.com` ||
+        !endpoint.pathname.startsWith(`/macros/s/`) ||
+        !endpoint.pathname.endsWith(`/exec`)
+      ) {
+        return Promise.reject(new Error(`Use o endereço público /exec do App da Web do Apps Script.`));
+      }
+
+      return new Promise((resolve, reject) => {
+        const frameName = `apps-script-save-${record.id}`;
+        const frame = document.createElement(`iframe`);
+        const form = document.createElement(`form`);
+        const payload = document.createElement(`input`);
+        let settled = false;
+        const timeout = setTimeout(() => finish(new Error(`O servidor não confirmou o envio em 30 segundos.`)), 30000);
+
+        frame.name = frameName;
+        frame.title = `Confirmação do envio da avaliação`;
+        frame.hidden = true;
+        form.method = `POST`;
+        form.action = endpoint.href;
+        form.target = frameName;
+        form.hidden = true;
+        payload.type = `hidden`;
+        payload.name = `payload`;
+        payload.value = JSON.stringify(record);
+        form.appendChild(payload);
+
+        function finish(error) {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
+          window.removeEventListener(`message`, handleResponse);
+          form.remove();
+          frame.remove();
+          if (error) reject(error);
+          else resolve();
+        }
+
+        function handleResponse(event) {
+          const response = event.data;
+          if (
+            event.source !== frame.contentWindow ||
+            !response ||
+            response.type !== `etec-form-save` ||
+            response.recordId !== record.id
+          ) return;
+          if (response.ok) finish();
+          else finish(new Error(response.message || `O Google Forms recusou a avaliação.`));
+        }
+
+        window.addEventListener(`message`, handleResponse);
+        document.body.append(frame, form);
+        try {
+          form.submit();
+        } catch (err) {
+          finish(new Error(`Não foi possível enviar a avaliação ao Apps Script.`));
+        }
+      });
     }
 
     // =========================================================================
@@ -1863,12 +1937,29 @@
       renderResultScreen(newRecord, hits, mastered, reinforce, bestTopic, worstTopic);
       const formLink = document.getElementById(`btn-submit-google-form`);
       if (formLink) formLink.href = buildGoogleFormPrefillUrl(newRecord);
-      if (storageErrors.length > 0) {
-        showResultSaveStatus(`Não foi possível salvar o resultado ${storageErrors.join(` e `)}. Abra o formulário e envie os dados para registrá-los.`, `error`);
-      } else {
-        showResultSaveStatus(`Resultado salvo neste navegador. Para registrá-lo no Google Forms, abra o formulário pré-preenchido e clique em Enviar.`, `info`);
-      }
+      if (formLink) formLink.hidden = Boolean(GOOGLE_APPS_SCRIPT_WEB_APP_URL);
       showPanel(`view-student-result`);
+
+      if (GOOGLE_APPS_SCRIPT_WEB_APP_URL) {
+        showResultSaveStatus(`Enviando avaliação ao Google Forms...`, `info`);
+        try {
+          await submitRecordToAppsScript(newRecord);
+          if (storageErrors.length > 0) {
+            showResultSaveStatus(`Avaliação enviada ao Google Forms, mas não foi salva ${storageErrors.join(` e `)}.`, `error`);
+          } else {
+            showResultSaveStatus(`Avaliação enviada e confirmada pelo Google Forms.`, `success`);
+          }
+        } catch (err) {
+          console.error(`Não foi possível enviar a avaliação ao Google Forms.`, err);
+          if (formLink) formLink.hidden = false;
+          const storageMessage = storageErrors.length > 0 ? ` O resultado também não foi salvo ${storageErrors.join(` e `)}.` : ``;
+          showResultSaveStatus(`Envio automático falhou: ${err.message}${storageMessage} Use o botão abaixo para abrir o formulário pré-preenchido.`, `error`);
+        }
+      } else if (storageErrors.length > 0) {
+        showResultSaveStatus(`Não foi possível salvar o resultado ${storageErrors.join(` e `)}. Use o botão abaixo para enviá-lo pelo Forms.`, `error`);
+      } else {
+        showResultSaveStatus(`Resultado salvo neste navegador. Envio automático ainda não configurado; abra o formulário pré-preenchido e clique em Enviar.`, `info`);
+      }
     }
 
     function renderResultScreen(rec, hits, mastered, reinforce, bestTopic, worstTopic) {
@@ -2123,6 +2214,9 @@
     // =========================================================================
     (async function initApp() {
       await loadPersistedState();
+      if (GOOGLE_APPS_SCRIPT_WEB_APP_URL) {
+        showStorageStatus(`As avaliações concluídas serão enviadas automaticamente ao Google Forms.`, `success`);
+      }
       if (window.lucide) {
         lucide.createIcons();
       }
