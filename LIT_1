@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="charter">
+  <title>ETEC — Avaliação Diagnóstica de Literatura (1ª Série EM)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Charter palette */
+      --background: #f7f4ec;
+      --surface-container-low: #fffdf8;
+      --surface-container: #ece5d4;
+      --surface-container-high: #e3dac4;
+
+      --on-surface: #1c1f26;
+      --on-surface-variant: #4f5360;
+
+      --outline: #b08d57;
+      --outline-variant: #d9cfb8;
+
+      --primary: #14213d;
+      --on-primary: #f7f4ec;
+      --primary-container: #e3e6ee;
+      --on-primary-container: #14213d;
+      --secondary: #2d5a4a;
+      --tertiary: #8a6a35;
+      --error: #9b2c2c;
+      --on-error: #f7f4ec;
+      --error-container: #fae8e8;
+      --positive: #2d5a4a;
+      --positive-container: #e4efe9;
+      --warning: #8a6a35;
+      --warning-container: #f6eedc;
+
+      --data-1: #14213d;
+      --data-2: #8a6a35;
+      --data-3: #2d5a4a;
+      --data-4: #5b7aa0;
+      --data-context: #c2bba9;
+
+      --focus: #14213d;
+      --watermark-ink: rgba(20, 33, 61, 0.045);
+      --overlay-scrim: rgba(20, 33, 61, 0.62);
+
+      --font-headline: 'Libre Caslon Text', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-label: 'JetBrains Mono', monospace;
+
+      --display-size: clamp(1.65rem, 1.3rem + 1.1vw, 2.2rem);
+      --headline-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem);
+      --subhead-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.15rem);
+      --body-size: clamp(0.9375rem, 0.91rem + 0.12vw, 1rem);
+      --label-size: 0.75rem;
+
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      --rounded: 0.125rem;
+      --rounded-lg: 0.125rem;
+      --rounded-full: 0.125rem;
+
+      --brass-rule: 2px solid var(--outline);
+      --hairline: 1px solid var(--outline-variant);
+      --leaf-underline: 0 1px 0 var(--outline-variant);
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+
+    button, input, select {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Title Band (Charter treatment #1 & #2) */
+    .title-band {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-bottom: 3px solid var(--outline);
+      padding: var(--space-lg) var(--space-lg);
+    }
+    .title-band-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .brand-kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--outline) 78%, var(--on-primary));
+      margin-bottom: var(--space-xs);
+    }
+    .title-band h1 {
+      font-family: var(--font-headline);
+      font-weight: 400;
+      font-size: var(--display-size);
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: var(--on-primary);
+    }
+    .title-band .lede {
+      font-size: var(--body-size);
+      color: color-mix(in srgb, var(--on-primary) 78%, var(--primary));
+      margin: var(--space-xs) 0 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out),
+                  border-color var(--dur-micro) var(--ease-out);
+      text-decoration: none;
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--primary) 86%, var(--on-primary));
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--primary-container);
+    }
+    .btn-brass {
+      background: transparent;
+      color: var(--on-primary);
+      border: 1px solid color-mix(in srgb, var(--outline) 80%, var(--on-primary));
+    }
+    .btn-brass:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--outline) 22%, var(--primary));
+    }
+    .btn-brass.active-tab {
+      background: var(--outline);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .btn-danger {
+      background: var(--error);
+      color: var(--on-error);
+      border-color: var(--error);
+    }
+
+    /* Page layout */
+    .page-grid {
+      display: grid;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Charter figure card & section head */
+    .figure-card {
+      background: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      box-shadow: var(--leaf-underline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+    }
+    .section-head {
+      border-top: var(--brass-rule);
+      border-bottom: var(--hairline);
+      padding-top: var(--space-sm);
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+    .section-head h2 {
+      font-family: var(--font-headline);
+      font-weight: 400;
+      font-size: var(--headline-size);
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--on-surface-variant);
+    }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+      gap: var(--space-md);
+      align-items: end;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .field label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+    .field input,
+    .field select {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+    }
+    .field select {
+      padding-right: var(--space-xl);
+    }
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--primary);
+      outline: 2px solid var(--focus);
+      outline-offset: 1px;
+    }
+
+    /* Inline feedback / toast */
+    .inline-alert {
+      display: none;
+      padding: var(--space-sm) var(--space-md);
+      border-left: 3px solid var(--error);
+      background: var(--error-container);
+      color: var(--error);
+      font-size: 0.9rem;
+      margin-top: var(--space-md);
+    }
+    .inline-alert.visible { display: flex; align-items: center; gap: var(--space-sm); }
+    .inline-alert.info {
+      border-left-color: var(--tertiary);
+      background: var(--warning-container);
+      color: var(--on-surface);
+    }
+    .inline-alert.success {
+      border-left-color: var(--positive);
+      background: var(--positive-container);
+      color: var(--positive);
+    }
+
+    /* Rules & Rubric overview */
+    .rubric-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+    .rubric-tile {
+      background: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      box-shadow: var(--leaf-underline);
+      padding: var(--space-md);
+    }
+    .rubric-tile .mencao-code {
+      font-family: var(--font-headline);
+      font-size: 1.5rem;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Anti-fraud protected exam area */
+    .exam-shell {
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+    }
+    .watermark-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-xl);
+      align-content: space-around;
+      padding: var(--space-xl);
+    }
+    .watermark-stamp {
+      font-family: var(--font-label);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--watermark-ink);
+      transform: rotate(-22deg);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .exam-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Status & Timer bar */
+    .exam-telemetry {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    .telemetry-cell {
+      background: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      box-shadow: var(--leaf-underline);
+      padding: var(--space-sm) var(--space-md);
+    }
+    .telemetry-val {
+      font-family: var(--font-headline);
+      font-size: 1.25rem;
+      font-variant-numeric: tabular-nums lining-nums;
+      color: var(--on-surface);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--surface-container);
+      margin-bottom: var(--space-lg);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 1%;
+      transition: width var(--dur-short) var(--ease-out);
+    }
+
+    /* Question Card */
+    .topic-tag {
+      display: inline-block;
+      border: 1px solid var(--outline);
+      color: var(--tertiary);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--rounded);
+      margin-bottom: var(--space-md);
+      text-transform: uppercase;
+    }
+    .question-stem {
+      font-family: var(--font-body);
+      font-size: 1.04rem;
+      line-height: 1.62;
+      color: var(--on-surface);
+      max-width: 72ch;
+      margin: 0 0 var(--space-lg);
+    }
+    .options-list {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .option-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      width: 100%;
+      text-align: left;
+      min-height: 48px;
+      padding: var(--space-md);
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  border-color var(--dur-micro) var(--ease-out);
+    }
+    .option-btn:hover {
+      background: var(--surface-container);
+      border-color: var(--outline);
+    }
+    .option-btn.selected {
+      background: var(--primary-container);
+      border-color: var(--primary);
+      box-shadow: inset 3px 0 0 var(--primary);
+    }
+    .option-letter {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.85rem;
+      min-width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--outline);
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .option-btn.selected .option-letter {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .exam-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      border-top: var(--hairline);
+    }
+
+    /* Compact Question Map (no fixed numbering) */
+    .q-map-panel {
+      margin-top: var(--space-lg);
+    }
+    .q-map-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(22px, 1fr));
+      gap: 6px;
+      margin-top: var(--space-sm);
+    }
+    .q-dot {
+      height: 22px;
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      padding: 0;
+    }
+    .q-dot.answered {
+      background: var(--secondary);
+      border-color: var(--secondary);
+    }
+    .q-dot.current {
+      outline: 2px solid var(--primary);
+      outline-offset: 1px;
+      background: var(--outline);
+      border-color: var(--primary);
+    }
+
+    /* Result screen */
+    .result-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      gap: var(--space-lg);
+      align-items: stretch;
+    }
+    .mencao-badge-card {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-top: 3px solid var(--outline);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .mencao-big {
+      font-family: var(--font-headline);
+      font-size: 3.25rem;
+      line-height: 1;
+      margin: var(--space-sm) 0;
+      color: var(--on-primary);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .figure-value {
+      font-family: var(--font-headline);
+      font-weight: 400;
+      font-size: 1.75rem;
+      font-variant-numeric: tabular-nums lining-nums;
+      color: var(--on-surface);
+      margin-top: var(--space-xs);
+    }
+    .figure-delta {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: var(--space-xs);
+      color: var(--tertiary);
+    }
+    .figure-delta.pos { color: var(--positive); }
+    .figure-delta.err { color: var(--error); }
+
+    .diag-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: var(--space-lg);
+      margin-top: var(--space-lg);
+    }
+    .diag-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .diag-item {
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border-left: 3px solid var(--outline);
+      box-shadow: var(--leaf-underline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .diag-item.mastered { border-left-color: var(--positive); }
+    .diag-item.reinforce { border-left-color: var(--error); }
+
+    /* Professor Dashboard */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr) auto auto;
+      gap: var(--space-md);
+      align-items: end;
+      margin-bottom: var(--space-lg);
+    }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--surface-container-low);
+      border-top: var(--brass-rule);
+      box-shadow: var(--leaf-underline);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead th {
+      background: var(--surface-container-high);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface);
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: var(--brass-rule);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: var(--hairline);
+      vertical-align: top;
+    }
+    tbody tr:hover {
+      background: var(--surface-container);
+    }
+    .num-cell {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .tag-mencao {
+      display: inline-block;
+      min-width: 34px;
+      text-align: center;
+      padding: 0.15rem 0.45rem;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.78rem;
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+    }
+    .tag-MB { background: var(--positive-container); color: var(--positive); border-color: var(--positive); }
+    .tag-B  { background: var(--primary-container); color: var(--primary); border-color: var(--primary); }
+    .tag-R  { background: var(--warning-container); color: var(--tertiary); border-color: var(--outline); }
+    .tag-I  { background: var(--error-container); color: var(--error); border-color: var(--error); }
+
+    /* Bar visual for weak topics */
+    .weak-bars {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .weak-bar-row {
+      display: grid;
+      grid-template-columns: minmax(0, 220px) minmax(0, 1fr) 72px;
+      gap: var(--space-md);
+      align-items: center;
+    }
+    .bar-track {
+      height: 14px;
+      background: var(--surface-container);
+      border-radius: var(--rounded);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: var(--data-1);
+    }
+    .bar-fill.high-err { background: var(--error); }
+    .bar-fill.mid-err { background: var(--data-2); }
+
+    /* PIN Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay-scrim);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      z-index: 50;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface-container-low);
+      border-top: 3px solid var(--outline);
+      padding: var(--space-lg);
+      box-shadow: var(--leaf-underline);
+    }
+
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+
+    @media (max-width: 640px) {
+      .page-grid { padding: var(--space-md); }
+      .form-grid { grid-template-columns: 1fr; }
+      .result-hero { grid-template-columns: 1fr; }
+      .filter-bar { grid-template-columns: 1fr; }
+      .weak-bar-row { grid-template-columns: 1fr; gap: var(--space-xs); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media print {
+      .no-print, .header-actions, .filter-bar button, .modal-backdrop { display: none !important; }
+      body { background: var(--surface-container-low); }
+      .page-grid { max-width: 100%; padding: 0; }
+      .title-band { padding: var(--space-md); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="title-band">
+    <div class="title-band-inner">
+      <div>
+        <div class="brand-kicker">ETEC • Ensino Médio • Língua Portuguesa e Literatura</div>
+        <h1>Avaliação Diagnóstica de Literatura — 1ª Série</h1>
+        <p class="lede">Trovadorismo, Humanismo, Classicismo e Barroco • Padrão FUVEST, ITA e ENEM (100 questões)</p>
+      </div>
+      <div class="header-actions no-print">
+        <button type="button" id="btn-nav-student" class="btn btn-brass active-tab" onclick="switchTopView('student')">
+          <i data-lucide="file-text" aria-hidden="true"></i>
+          <span>Área do Estudante</span>
+        </button>
+        <button type="button" id="btn-nav-professor" class="btn btn-brass" onclick="openPinModal()">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <span>Área do Professor</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-grid">
+
+    <!-- VIEW 1: STUDENT IDENTIFICATION & INTRO -->
+    <section id="view-student-intro" class="view-panel active">
+      <div class="figure-card">
+        <div class="section-head">
+          <h2>Identificação do Estudante</h2>
+          <span class="kicker">Protocolo Antifraude Ativo</span>
+        </div>
+        <p>Preencha seu nome completo e selecione sua turma para iniciar a avaliação diagnóstica de <strong>100 questões objetivas</strong>. A ordem das questões e das alternativas é embaralhada individualmente para cada estudante.</p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="student-name">Nome Completo do Estudante</label>
+            <input type="text" id="student-name" placeholder="Ex.: Ana Beatriz Oliveira Santos" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="student-class">Sala / Turma</label>
+            <select id="student-class">
+              <option value="">Selecione a turma…</option>
+              <option value="1º DS-A">1º DS-A</option>
+              <option value="1º DS-B">1º DS-B</option>
+              <option value="1º ADM-A">1º ADM-A</option>
+              <option value="1º ADM-B">1º ADM-B</option>
+            </select>
+          </div>
+          <button type="button" id="btn-start-exam" class="btn btn-primary" onclick="startExam()">
+            <i data-lucide="play" aria-hidden="true"></i>
+            <span>Iniciar Avaliação</span>
+          </button>
+        </div>
+
+        <div id="intro-error" class="inline-alert" role="alert"></div>
+
+        <div class="rubric-strip">
+          <div class="rubric-tile">
+            <div class="kicker">Menção I — Insuficiente</div>
+            <div class="mencao-code">≤ 25% a 49%</div>
+            <div class="kicker">Requer retomada integral</div>
+          </div>
+          <div class="rubric-tile">
+            <div class="kicker">Menção R — Regular</div>
+            <div class="mencao-code">50% – 74%</div>
+            <div class="kicker">Domínio parcial dos eixos</div>
+          </div>
+          <div class="rubric-tile">
+            <div class="kicker">Menção B — Bom</div>
+            <div class="mencao-code">75%</div>
+            <div class="kicker">Desempenho satisfatório</div>
+          </div>
+          <div class="rubric-tile">
+            <div class="kicker">Menção MB — Muito Bom</div>
+            <div class="mencao-code">&gt; 75% – 100%</div>
+            <div class="kicker">Proficiência consolidada</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: STUDENT QUIZ INTERFACE -->
+    <section id="view-student-quiz" class="view-panel">
+      <div class="exam-shell" id="exam-protected-zone">
+        <div class="watermark-layer" aria-hidden="true" id="watermark-container"></div>
+
+        <div class="exam-content">
+          <div class="exam-telemetry">
+            <div class="telemetry-cell">
+              <div class="kicker">Estudante</div>
+              <div class="telemetry-val" id="tele-name">—</div>
+            </div>
+            <div class="telemetry-cell">
+              <div class="kicker">Turma</div>
+              <div class="telemetry-val" id="tele-class">—</div>
+            </div>
+            <div class="telemetry-cell">
+              <div class="kicker">Início / Decorrido</div>
+              <div class="telemetry-val" id="tele-timer">00:00:00</div>
+            </div>
+            <div class="telemetry-cell">
+              <div class="kicker">Progresso</div>
+              <div class="telemetry-val" id="tele-progress">0 / 100 respondidas</div>
+            </div>
+          </div>
+
+          <div class="progress-track" aria-label="Progresso da avaliação">
+            <div class="progress-fill" id="exam-progress-bar"></div>
+          </div>
+
+          <div id="anti-fraud-toast" class="inline-alert info" role="status"></div>
+
+          <article class="figure-card">
+            <div class="topic-tag" id="q-topic-tag">[Trovadorismo]</div>
+            <p class="question-stem" id="q-stem-text">Carregando questão…</p>
+
+            <div class="options-list" id="q-options-container"></div>
+
+            <div class="exam-nav">
+              <div style="display:flex; gap: var(--space-sm); flex-wrap:wrap;">
+                <button type="button" id="btn-prev-q" class="btn btn-secondary" onclick="prevQuestion()">
+                  <i data-lucide="arrow-left" aria-hidden="true"></i>
+                  <span>Anterior</span>
+                </button>
+                <button type="button" id="btn-next-q" class="btn btn-primary" onclick="nextQuestion()">
+                  <span>Próxima</span>
+                  <i data-lucide="arrow-right" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div style="display:flex; gap: var(--space-sm); align-items:center; flex-wrap:wrap;">
+                <button type="button" id="btn-finish-exam" class="btn btn-secondary" onclick="handleFinishClick(this)">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  <span>Finalizar e Enviar Avaliação</span>
+                </button>
+              </div>
+            </div>
+            <div id="finish-warning" class="inline-alert info"></div>
+          </article>
+
+          <div class="figure-card q-map-panel">
+            <div class="section-head" style="margin-bottom: var(--space-sm);">
+              <span class="kicker">Mapa de Questões (ordem individualizada • sem numeração fixa)</span>
+              <span class="kicker" id="q-cursor-label">Item atual</span>
+            </div>
+            <div class="q-map-grid" id="q-map-grid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: STUDENT RESULT SCREEN -->
+    <section id="view-student-result" class="view-panel">
+      <div class="section-head">
+        <h2>Boletim Diagnóstico Individual</h2>
+        <span class="kicker" id="res-student-meta">—</span>
+      </div>
+
+      <div class="result-hero">
+        <div class="mencao-badge-card">
+          <div class="kicker" style="color: color-mix(in srgb, var(--outline) 80%, var(--on-primary));">Menção Final ETEC</div>
+          <div class="mencao-big" id="res-mencao">—</div>
+          <div id="res-mencao-desc" style="font-size:0.95rem;">—</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="figure-card">
+            <div class="kicker">Nota Percentual</div>
+            <div class="figure-value" id="res-pct">0%</div>
+            <div class="figure-delta" id="res-hits">0 de 100 acertos</div>
+          </div>
+          <div class="figure-card">
+            <div class="kicker">Tempo Total</div>
+            <div class="figure-value" id="res-duration">00:00:00</div>
+            <div class="figure-delta" id="res-timespan">—</div>
+          </div>
+          <div class="figure-card">
+            <div class="kicker">Eixo Mais Forte</div>
+            <div class="figure-value" id="res-best-topic" style="font-size:1.25rem;">—</div>
+            <div class="figure-delta pos" id="res-best-pct">—</div>
+          </div>
+          <div class="figure-card">
+            <div class="kicker">Ponto Prioritário</div>
+            <div class="figure-value" id="res-worst-topic" style="font-size:1.25rem;">—</div>
+            <div class="figure-delta err" id="res-worst-pct">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="diag-columns">
+        <div class="figure-card">
+          <div class="section-head">
+            <h2>Tópicos Dominados</h2>
+            <span class="kicker">Aproveitamento ≥ 75%</span>
+          </div>
+          <ul class="diag-list" id="res-mastered-list"></ul>
+        </div>
+        <div class="figure-card">
+          <div class="section-head">
+            <h2>Plano de Reforço Diagnóstico</h2>
+            <span class="kicker">Aproveitamento &lt; 75%</span>
+          </div>
+          <ul class="diag-list" id="res-reinforce-list"></ul>
+        </div>
+      </div>
+
+      <div style="margin-top: var(--space-lg); display:flex; gap: var(--space-md); flex-wrap:wrap;" class="no-print">
+        <button type="button" class="btn btn-secondary" onclick="resetToNewStudent()">
+          <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+          <span>Nova Aplicação (Outro Estudante)</span>
+        </button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">
+          <i data-lucide="printer" aria-hidden="true"></i>
+          <span>Imprimir Comprovante</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- VIEW 4: TEACHER CONTROL PANEL (PAINEL DO PROFESSOR) -->
+    <section id="view-professor-dashboard" class="view-panel">
+      <div class="section-head">
+        <h2>Painel do Professor — Gestão Diagnóstica</h2>
+        <div style="display:flex; gap: var(--space-sm); align-items:center;">
+          <span class="kicker">Acesso Autenticado</span>
+          <button type="button" class="btn btn-secondary no-print" style="min-height:36px; padding: 0.25rem 0.75rem;" onclick="lockProfessorPanel()">
+            <i data-lucide="lock" aria-hidden="true"></i>
+            <span>Bloquear Painel</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom: var(--space-lg);">
+        <div class="figure-card">
+          <div class="kicker">Estudantes Avaliados</div>
+          <div class="figure-value" id="prof-kpi-count">0</div>
+          <div class="figure-delta" id="prof-kpi-scope">Todas as Salas</div>
+        </div>
+        <div class="figure-card">
+          <div class="kicker">Média da Turma</div>
+          <div class="figure-value" id="prof-kpi-avg">0%</div>
+          <div class="figure-delta" id="prof-kpi-mencao">Menção média: —</div>
+        </div>
+        <div class="figure-card">
+          <div class="kicker">Aprovação (B / MB)</div>
+          <div class="figure-value" id="prof-kpi-pass">0%</div>
+          <div class="figure-delta pos" id="prof-kpi-pass-sub">≥ 75% de acertos</div>
+        </div>
+        <div class="figure-card">
+          <div class="kicker">Fragilidade Coletiva</div>
+          <div class="figure-value" id="prof-kpi-weak" style="font-size:1.15rem;">—</div>
+          <div class="figure-delta err" id="prof-kpi-weak-sub">Foco de replanejamento</div>
+        </div>
+      </div>
+
+      <!-- Pedagogical Replanning Summary -->
+      <div class="figure-card" style="margin-bottom: var(--space-lg);">
+        <div class="section-head">
+          <h2>Diagnóstico Pedagógico por Eixo — Replanejamento de Aulas</h2>
+          <span class="kicker">Taxa de erro coletiva por subtópico</span>
+        </div>
+        <div class="weak-bars" id="prof-weak-bars"></div>
+        <p id="prof-replan-recommendation" style="margin: var(--space-md) 0 0; color: var(--on-surface-variant); font-size:0.92rem;"></p>
+      </div>
+
+      <!-- Filters & Actions -->
+      <div class="filter-bar no-print">
+        <div class="field">
+          <label for="prof-search">Buscar por Nome</label>
+          <input type="text" id="prof-search" placeholder="Filtrar estudante…" oninput="renderProfessorDashboard()">
+        </div>
+        <div class="field">
+          <label for="prof-class-filter">Filtrar por Sala</label>
+          <select id="prof-class-filter" onchange="renderProfessorDashboard()">
+            <option value="ALL">Todas as Salas</option>
+            <option value="1º DS-A">1º DS-A</option>
+            <option value="1º DS-B">1º DS-B</option>
+            <option value="1º ADM-A">1º ADM-A</option>
+            <option value="1º ADM-B">1º ADM-B</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="prof-mencao-filter">Filtrar por Menção</label>
+          <select id="prof-mencao-filter" onchange="renderProfessorDashboard()">
+            <option value="ALL">Todas as Menções</option>
+            <option value="MB">MB (Muito Bom)</option>
+            <option value="B">B (Bom)</option>
+            <option value="R">R (Regular)</option>
+            <option value="I">I (Insuficiente)</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="exportResultsCsv()">
+          <i data-lucide="download" aria-hidden="true"></i>
+          <span>Exportar CSV</span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="window.print()">
+          <i data-lucide="printer" aria-hidden="true"></i>
+          <span>Imprimir Relatório</span>
+        </button>
+      </div>
+
+      <!-- Alphabetical Results Table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome (Ordem Alfabética)</th>
+              <th>Sala</th>
+              <th style="text-align:right;">Nota (%)</th>
+              <th>Menção</th>
+              <th style="text-align:right;">Tempo Total</th>
+              <th style="text-align:right;">Hora Início</th>
+              <th style="text-align:right;">Hora Término</th>
+              <th>Diagnóstico Sintético</th>
+            </tr>
+          </thead>
+          <tbody id="prof-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PIN MODAL FOR TEACHER ACCESS -->
+  <div id="pin-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="pin-modal-title">
+    <div class="modal-box">
+      <div class="section-head">
+        <h2 id="pin-modal-title">Acesso Restrito — Área do Professor</h2>
+        <span class="kicker">PIN Institucional</span>
+      </div>
+      <p style="margin-top:0; color: var(--on-surface-variant); font-size:0.92rem;">
+        Informe o PIN de docente para acessar os resultados em ordem alfabética, métricas por sala e relatório de replanejamento.
+      </p>
+      <div class="field">
+        <label for="prof-pin-input">PIN de Acesso</label>
+        <input type="password" id="prof-pin-input" placeholder="Digite o PIN do professor" onkeydown="handlePinKey(event)">
+      </div>
+      <div id="pin-error" class="inline-alert" role="alert"></div>
+      <div style="display:flex; justify-content:flex-end; gap:var(--space-sm); margin-top:var(--space-lg);">
+        <button type="button" class="btn btn-secondary" onclick="closePinModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="validateProfessorPin()">Desbloquear Painel</button>
+      </div>
+    </div>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    // =========================================================================
+    // 1. QUESTION BANK (100 QUESTIONS: 25 Trovadorismo, 25 Humanismo, 25 Classicismo, 25 Barroco)
+    // =========================================================================
+    const QUESTION_BANK = [
+      // --- TROVADORISMO (25) ---
+      { id: 1, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Amor`, stem: `Na cantiga de amor trovadoresca, o eu lírico masculino dirige-se à mulher amada como "mia senhor", colocando-se em posição de submissão. Essa relação reflete diretamente:`, opts: [`a estrutura da vassalagem feudal transposta para o plano amoroso`, `a igualdade jurídica entre camponeses e nobres nas cidades medievais`, `a influência do racionalismo iluminista nas cortes ibéricas`, `a rejeição completa dos valores cristãos pela nobreza galego-portuguesa`], ans: 0 },
+      { id: 2, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Amigo`, stem: `Diferentemente da cantiga de amor, a cantiga de amigo galego-portuguesa caracteriza-se por:`, opts: [`apresentar um eu lírico feminino que dialoga com a mãe, amigas ou elementos da natureza`, `exaltar a vida urbana e o comércio marítimo das grandes navegações`, `empregar exclusivamente o verso decassílabo heroico de origem italiana`, `satirizar membros do clero por meio de alusões nominais diretas`], ans: 0 },
+      { id: 3, era: `Trovadorismo`, sub: `Trovadorismo - Paralelismo`, stem: `"Ondas do mar de Vigo, se vistes meu amigo! E ai Deus, se verrá cedo!" — O recurso formal predominante na cantiga de amigo acima, responsável por seu caráter musical e mnemônico, é:`, opts: [`o paralelismo estrutural aliado ao refrão`, `a oitava rima camoniana com encadeamento épico`, `o cultismo sintático baseado em hipérbatos`, `o verso branco sem esquema rímico regular`], ans: 0 },
+      { id: 4, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Escárnio`, stem: `Nas cantigas de escárnio, os trovadores praticavam a crítica social por meio de:`, opts: [`ironia indireta, ambiguidade e jogos de palavras sem nomear explicitamente o alvo`, `ataque verbal explícito com citação direta do nome da vítima`, `louvor cortesão à pureza espiritual da dama inacessível`, `monólogos dramáticos escritos em prosa historiográfica`], ans: 0 },
+      { id: 5, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Maldizer`, stem: `O que distingue formalmente a cantiga de maldizer da cantiga de escárnio nos cancioneiros medievais?`, opts: [`a sátira aberta e direta, frequentemente nomeando o alvo e usando vocabulário chulo`, `o uso obrigatório de diálogo entre pastores em ambiente bucólico`, `a ausência total de acompanhamento musical nas apresentações`, `a temática exclusivamente religiosa voltada ao culto mariano`], ans: 0 },
+      { id: 6, era: `Trovadorismo`, sub: `Trovadorismo - Coita Amorosa`, stem: `O conceito de "coita" nas cantigas de amor de D. Dinis e Paio Soares de Taveirós designa:`, opts: [`o sofrimento profundo e contínuo do apaixonado diante da indiferença ou distância da dama`, `a alegria plena da união conjugal abençoada pela Igreja`, `o desprezo satírico pelos costumes burgueses das feiras medievais`, `a saudade patriótica dos navegadores portugueses no Índico`], ans: 0 },
+      { id: 7, era: `Trovadorismo`, sub: `Trovadorismo - Contexto Histórico`, stem: `A língua literária empregada na lírica trovadoresca da Península Ibérica entre os séculos XII e XIV foi:`, opts: [`o galego-português, antes da consolidação do português moderno`, `o latim clássico ciceroniano exigido pelos trovadores da corte`, `o castelhano quinhentista trazido por Sá de Miranda`, `o provençal puro sem adaptações vocabulares regionais`], ans: 0 },
+      { id: 8, era: `Trovadorismo`, sub: `Trovadorismo - Cancioneiros`, stem: `As composições trovadorescas chegaram até nós reunidas em grandes coletâneas manuscritas denominadas:`, opts: [`Cancioneiro da Ajuda, Cancioneiro da Biblioteca Nacional e Cancioneiro da Vaticana`, `Os Lusíadas, Livro de Linhagens e Crônica de D. João I`, `Auto da Índia, Cancioneiro Geral de Garcia de Resende e Menina e Moça`, `Sermões da Sexagésima, Arte de Furtar e Prosopopeia`], ans: 0 },
+      { id: 9, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Amigo`, stem: `As "barcarolas" ou "marinhas" são subgêneros das cantigas de amigo em que o cenário central é:`, opts: [`o mar ou os rios, associados à espera do amado que partiu em embarcações ou expedições`, `o salão palaciano onde se realizam saraus de poesia medida nova`, `o mosteiro beneditino dedicado à leitura de tratados humanistas`, `a praça urbana onde mercadores negociam especiarias orientais`], ans: 0 },
+      { id: 10, era: `Trovadorismo`, sub: `Trovadorismo - Teocentrismo`, stem: `A visão de mundo predominante na Idade Média que submete as relações sociais, artísticas e intelectuais à ordem divina recebe o nome de:`, opts: [`teocentrismo`, `antropocentrismo`, `cientificismo positivista`, `relativismo barroco`], ans: 0 },
+      { id: 11, era: `Trovadorismo`, sub: `Trovadorismo - Jograis e Trovadores`, stem: `No circuito de produção e difusão da poesia medieval ibérica, qual a distinção social entre trovador e jogral?`, opts: [`o trovador era geralmente nobre que compunha letra e música; o jogral executava e cantava mediante pagamento`, `o trovador atuava apenas em igrejas e o jogral escrevia crônicas reais em prosa`, `o trovador compunha em latim e o jogral traduzia as obras para a imprensa`, `não havia distinção, pois ambos pertenciam exclusivamente ao clero regular`], ans: 0 },
+      { id: 12, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Amor`, stem: `"No mundo non me sei parelha / mentre me for como me vai..." — Na famosa Cantiga da Ribeirinha, o eu lírico exalta a amada afirmando que:`, opts: [`seu sofrimento de amor é incomparável, pois ela supera todas em formosura e o faz perder o juízo`, `a vida campestre oferece refúgio superior às ambições da corte`, `a passagem implacável do tempo exige aproveitar a juventude`, `o pecado carnal deve ser punido pelo rigor da Contrarreforma`], ans: 0 },
+      { id: 13, era: `Trovadorismo`, sub: `Trovadorismo - Novelas de Cavalaria`, stem: `Além da lírica, a prosa medieval do Trovadorismo cultivou as novelas de cavalaria (como A Demanda do Santo Graal), cujos protagonistas encarnavam:`, opts: [`valores cristãos de honra, fidelidade ao suserano e defesa dos desvalidos`, `o ceticismo burguês diante das cruzadas e das peregrinações`, `a exaltação da mitologia pagã em detrimento da fé católica`, `a crítica ácida à hipocrisia dos fidalgos por meio da farsa teatral`], ans: 0 },
+      { id: 14, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Amigo`, stem: `Nas cantigas de romaria, variedade da cantiga de amigo, o encontro ou a busca pelo amado ocorre:`, opts: [`durante peregrinações a santuários e ermidas populares`, `nos bastidores das grandes navegações ao Cabo da Boa Esperança`, `nas universidades renascentistas da península itálica`, `nos engenhos açucareiros da colônia americana`], ans: 0 },
+      { id: 15, era: `Trovadorismo`, sub: `Trovadorismo - Provença`, stem: `A cantiga de amor portuguesa sofreu forte influência do sul da França, especialmente da poesia provençal que difundiu:`, opts: [`o ideal do amor cortês (fin'amors) e a idealização da mulher casada ou nobre`, `o teatro vicentino de crítica moralizante em redondilhas maiores`, `o soneto petrarquista com chave de ouro conclusiva`, `a prosa parenética voltada à catequese indígena`], ans: 0 },
+      { id: 16, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Amigo`, stem: `Em "Ai flores, ai flores do verde pino, se sabedes novas do meu amigo!", a interlocução com os pinheiros verdes evidencia:`, opts: [`uma natureza personificada e confidente dos anseios afetivos do eu lírico feminino`, `a descrição objetiva da flora lusitana para fins científicos`, `o locus horridus característico da angústia barroca`, `a denúncia ecológica contra o desmatamento das florestas reais`], ans: 0 },
+      { id: 17, era: `Trovadorismo`, sub: `Trovadorismo - Musicalidade`, stem: `Por que a poesia trovadoresca recebia o nome de "cantiga" e utilizava "leixa-pren" e refrão?`, opts: [`porque era essencialmente oral e cantada ao som de instrumentos como viola e alaúde`, `porque era distribuída em folhetos impressos de literatura de cordel`, `porque seguia as normas rígidas da Academia dos Esquecidos`, `porque se destinava à leitura silenciosa nas bibliotecas humanistas`], ans: 0 },
+      { id: 18, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Escárnio`, stem: `Quando um trovador ironiza um cavaleiro covarde dizendo que ele "corre mais rápido para longe da batalha do que para o combate", sem citar-lhe o nome, configura-se:`, opts: [`uma cantiga de escárnio fundada no equívoco e na ironia`, `uma cantiga de amor de tom elegíaco`, `uma cantiga de amigo de tipo alva`, `um auto sacramental de caráter alegórico`], ans: 0 },
+      { id: 19, era: `Trovadorismo`, sub: `Trovadorismo - Prosa Medieval`, stem: `Além das novelas de cavalaria, os "Nobiliários" ou "Livros de Linhagens" produzidos no período medieval tinham como função:`, opts: [`registrar a genealogia das famílias nobres para preservar direitos e títulos feudais`, `reunir receitas culinárias e conselhos médicos para os mosteiros`, `traduzir as epopeias de Homero para o galego-português`, `criticar o poder absoluto dos monarcas absolutistas`], ans: 0 },
+      { id: 20, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Amor`, stem: `Na cantiga de amor, o adjetivo "mesura" atribuído à dama refere-se:`, opts: [`ao equilíbrio, discrição e nobreza de comportamento exigidos pela etiqueta cortesã`, `à extensão métrica exata de dez sílabas poéticas por verso`, `à avareza dos burgueses que cobravam juros abusivos`, `ao exagero retórico das metáforas seiscentistas`], ans: 0 },
+      { id: 21, era: `Trovadorismo`, sub: `Trovadorismo - D. Dinis`, stem: `O rei D. Dinis destacou-se na história cultural portuguesa do Trovadorismo por:`, opts: [`ter sido prolífico trovador e fundado os Estudos Gerais, embrião da Universidade de Coimbra`, `ter patrocinado a primeira edição impressa de Os Lusíadas`, `ter escrito a Carta do Achamento do Brasil em 1500`, `ter liderado o movimento iluminista da Arcádia Lusitana`], ans: 0 },
+      { id: 22, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Maldizer`, stem: `Na análise crítica de cantigas satíricas de Pero da Ponte ou João Garcia de Guilhade, percebe-se que o Trovadorismo:`, opts: [`não se limitava à idealização amorosa, expondo conflitos políticos, avareza e hipocrisia social`, `proibia qualquer crítica a nobres ou membros do clero sob pena de exílio`, `era praticado exclusivamente por mulheres da burguesia comercial`, `antecipava o cientificismo naturalista do século XIX`], ans: 0 },
+      { id: 23, era: `Trovadorismo`, sub: `Trovadorismo - Cantiga de Amigo`, stem: `As "bailias" ou "bailadas" dentro do conjunto das cantigas de amigo convidavam:`, opts: [`à dança coletiva feminina em celebração ao amor ou à primavera`, `à meditação fúnebre sobre a brevidade da existência humana`, `ao debate filosófico sobre a centralidade do Sol no universo`, `ao julgamento das almas diante dos barqueiros do além`], ans: 0 },
+      { id: 24, era: `Trovadorismo`, sub: `Trovadorismo - Paralelismo`, stem: `O recurso chamado "leixa-pren" (deixa e toma), típico de muitas cantigas de amigo, consiste em:`, opts: [`retomar o segundo verso de uma estrofe como o primeiro verso da estrofe seguinte correspondente`, `substituir todas as rimas consoantes por versos heroicos`, `inverter a ordem sintática entre sujeito e predicado em todas as orações`, `alternar falas de personagens mitológicos e bíblicos no mesmo poema`], ans: 0 },
+      { id: 25, era: `Trovadorismo`, sub: `Trovadorismo - Hagiografias`, stem: `As hagiografias medievais, gênero em prosa paralelo às cantigas, dedicavam-se a:`, opts: [`narrar a vida e os milagres dos santos como exemplo moral aos fiéis`, `registrar os naufrágios da Carreira da Índia no século XVI`, `reunir poemas palacianos escritos para leitura nos serões da corte`, `descrever a fauna e a flora da costa brasileira recém-descoberta`], ans: 0 },
+
+      // --- HUMANISMO (25) ---
+      { id: 26, era: `Humanismo`, sub: `Humanismo - Contexto de Transição`, stem: `Situado em Portugal entre 1418/1434 e 1527, o Humanismo representa um período de transição porque:`, opts: [`mantém valores cristãos medievais enquanto afirma o antropocentrismo e o racionalismo nascente`, `rompe totalmente com a religião cristã, tornando-se integralmente ateu`, `substitui a língua portuguesa pelo grego clássico em toda produção literária`, `antecipa o pessimismo decadente da literatura simbolista`], ans: 0 },
+      { id: 27, era: `Humanismo`, sub: `Humanismo - Fernão Lopes`, stem: `Nomeado cronista-mor do Reino, Fernão Lopes é considerado o "pai da historiografia portuguesa" porque:`, opts: [`priorizou a pesquisa documental, a imparcialidade possível e deu protagonismo ao povo na Revolução de Avis`, `inventou batalhas mitológicas para agradar exclusivamente aos fidalgos`, `escreveu apenas em verso decassílabo sobre os deuses do Olimpo`, `limitou suas crônicas a copiar genealogias de mosteiros sem verificação`], ans: 0 },
+      { id: 28, era: `Humanismo`, sub: `Humanismo - Gil Vicente`, stem: `O teatro de Gil Vicente apresenta caráter moralizante e satírico resumido na máxima latina "Ridendo castigat mores", que significa:`, opts: [`rindo, corrigem-se os costumes`, `fora da corte não há salvação artística`, `aproveita o dia antes da velhice`, `o estilo obscuro eleva o espírito`], ans: 0 },
+      { id: 29, era: `Humanismo`, sub: `Humanismo - Auto da Barca do Inferno`, stem: `No Auto da Barca do Inferno, de Gil Vicente, as personagens julgadas no cais após a morte representam:`, opts: [`tipos sociais alegóricos (Fidalgo, Onzeneiro, Sapateiro, Frade, Parvo) que expõem os vícios de cada classe`, `indivíduos históricos romanos que participaram das guerras púnicas`, `heróis burgueses idealizados pela ausência completa de defeitos morais`, `navegantes portugueses elogiados pela conquista de Calicute`], ans: 0 },
+      { id: 30, era: `Humanismo`, sub: `Humanismo - Auto da Barca do Inferno`, stem: `Em Auto da Barca do Inferno, por que Joane (o Parvo) é salvo pelo Anjo, enquanto o Fidalgo e o Frade são condenados à barca do Diabo?`, opts: [`porque Joane agiu sem malícia ou cálculo pecaminoso, ao passo que os demais foram corrompidos por soberba e hipocrisia`, `porque Joane pagou em ouro ao Anjo na entrada da barca`, `porque o teatro vicentino condenava apenas os membros do baixo povo`, `porque Joane dominava a retórica latina e os dogmas escolásticos`], ans: 0 },
+      { id: 31, era: `Humanismo`, sub: `Humanismo - Auto da Barca do Inferno`, stem: `A cena do Onzeneiro (agiota) em Gil Vicente evidencia a crítica humanista à:`, opts: [`ganância e ao acúmulo obsessivo de dinheiro gerado pelo capitalismo comercial incipiente`, `pobreza voluntária dos cavaleiros que partiam às Cruzadas`, `extinção dos impostos cobrados pela Coroa portuguesa`, `criação da imprensa de tipos móveis por Gutenberg`], ans: 0 },
+      { id: 32, era: `Humanismo`, sub: `Humanismo - Auto da Barca do Inferno`, stem: `Os Quatro Cavaleiros da Ordem de Cristo, ao final do Auto da Barca do Inferno, entram diretamente na barca do Anjo porque:`, opts: [`morreram combatendo em defesa da fé cristã, refletindo a persistência do ideal medieval das cruzadas em Gil Vicente`, `compraram indulgências junto ao Corregedor antes do embarque`, `negaram todos os sacramentos religiosos durante a travessia marítima`, `apresentaram sonetos renascentistas ao Arrais do Céu`], ans: 0 },
+      { id: 33, era: `Humanismo`, sub: `Humanismo - Farsa de Inês Pereira`, stem: `Na Farsa de Inês Pereira, o provérbio "Mais quero asno que me leve que cavalo que me derrube" sintetiza:`, opts: [`a preferência pragmática por um marido pacato e manipulável (Pero Marques) após o fracasso com um escudeiro vaidoso e opressor`, `a exaltação da vida pastoral longe da cidade de Lisboa`, `a defesa da vassalagem amorosa submissa típica das cantigas de amor`, `a recusa absoluta do casamento em favor da vida conventual`], ans: 0 },
+      { id: 34, era: `Humanismo`, sub: `Humanismo - Teatro Vicentino`, stem: `Do ponto de vista formal, as peças de Gil Vicente caracterizam-se por:`, opts: [`empregarem a medida velha (redondilhas menores e maiores) e não seguirem a divisão clássica em atos e unidades`, `obedecerem rigorosamente às três unidades clássicas de Aristóteles em cinco atos`, `serem escritas inteiramente em prosa jornalística e coloquial moderna`, `utilizarem apenas versos alexandrinos parnasianos de doze sílabas`], ans: 0 },
+      { id: 35, era: `Humanismo`, sub: `Humanismo - Poesia Palaciana`, stem: `A poesia palaciana reunida no Cancioneiro Geral de Garcia de Resende (1516) distingue-se das cantigas trovadorescas porque:`, opts: [`desvinculou-se da música para ser declamada nos serões da corte e passou a ser impressa`, `foi escrita exclusivamente por camponeses analfabetos nas aldeias`, `eliminou o uso de rimas e métricas regulares em favor do verso livre`, `adotou o latim eclesiástico como única língua poética`], ans: 0 },
+      { id: 36, era: `Humanismo`, sub: `Humanismo - Crônica Histórica`, stem: `Ao narrar o cerco de Lisboa na Crônica de D. João I, Fernão Lopes destaca a fome e a resistência da população comum. Esse procedimento revela:`, opts: [`uma concepção histórica que reconhece o papel coletivo do "povo miúdo" nas transformações políticas`, `a indiferença do cronista diante dos sofrimentos materiais da sociedade`, `a imitação servil das tragédias gregas de Sófocles`, `a adesão ao estilo cultista e rebuscado do Barroco`], ans: 0 },
+      { id: 37, era: `Humanismo`, sub: `Humanismo - Antropocentrismo`, stem: `A retomada dos autores greco-latinos (como Cícero e Quintiliano) por estudiosos como Francesco Petrarca no Humanismo teve como eixo:`, opts: [`colocar o ser humano e suas potencialidades intelectuais no centro das reflexões`, `proibir o uso das línguas nacionais europeias na literatura`, `reafirmar a submissão cega à autoridade feudal sem espírito crítico`, `substituir a razão pela exaltação barroca do paradoxo religioso`], ans: 0 },
+      { id: 38, era: `Humanismo`, sub: `Humanismo - Imprensa e Circulação`, stem: `A difusão de obras como o Auto da Barca do Inferno em folhetos baratos vendidos nas ruas por volta de 1518 indica:`, opts: [`a ampliação do público leitor e o impacto da prensa tipográfica na circulação literária`, `que o teatro vicentino era secreto e restrito ao rei`, `a proibição total da leitura dramática fora dos mosteiros`, `o desaparecimento completo da cultura oral na Península Ibérica`], ans: 0 },
+      { id: 39, era: `Humanismo`, sub: `Humanismo - Gil Vicente`, stem: `Na crítica ao Corregedor e ao Procurador no Auto da Barca do Inferno, Gil Vicente denuncia principalmente:`, opts: [`a corrupção da justiça e o recebimento de subornos por magistrados que distorcem a lei`, `o excesso de honestidade dos funcionários da Casa da Índia`, `a abolição dos tribunais civis durante o reinado de D. Manuel`, `a influência da filosofia iluminista nas leis municipais`], ans: 0 },
+      { id: 40, era: `Humanismo`, sub: `Humanismo - Gil Vicente`, stem: `A personagem Brísida Vaz, a alcoviteira, ao tentar convencer o Anjo de que merece o Paraíso porque "arranjava moças para os cônegos", revela o recurso vicentino de:`, opts: [`expor a hipocrisia moral de parte do clero por meio da ironia e da fala ingênua da pecadora`, `defender a validade jurídica da alcovitice na corte manuelina`, `enobrecer o trabalho dos mercadores de escravos em Lisboa`, `negar a existência do julgamento divino nas farsas`], ans: 0 },
+      { id: 41, era: `Humanismo`, sub: `Humanismo - Farsa e Auto`, stem: `No teatro de Gil Vicente, qual é a diferença básica entre "auto" e "farsa"?`, opts: [`o auto possui cunho alegórico e moralizante/religioso; a farsa foca o cotidiano burguês e doméstico com humor direto`, `o auto é sempre trágico sem humor e a farsa é sempre cantada em latim`, `o auto trata de guerras antigas e a farsa exclusivamente de santos católicos`, `ambos são sinônimos exatos de epopeia em versos decassílabos`], ans: 0 },
+      { id: 42, era: `Humanismo`, sub: `Humanismo - Poesia Palaciana`, stem: `Na poesia palaciana do Cancioneiro Geral, o termo "esparsa" designa:`, opts: [`uma composição curta de uma única estrofe que condensa um conceito ou reflexão amorosa`, `uma peça teatral em cinco atos encenada nas praças públicas`, `uma crônica histórica sobre os descobrimentos africanos`, `um soneto decassílabo importado da Itália por Sá de Miranda`], ans: 0 },
+      { id: 43, era: `Humanismo`, sub: `Humanismo - Contexto Socioeconômico`, stem: `O declínio do feudalismo e a ascensão da burguesia mercantil em Portugal nos séculos XV e XVI refletem-se na literatura humanista por meio:`, opts: [`da valorização do indivíduo, do trabalho urbano e da crítica aos privilégios ociosos da fidalguia`, `do retorno exclusivo à vida rural isolada nos feudos`, `da defesa do geocentrismo contra as navegações atlânticas`, `da eliminação das personagens populares nos autos teatrais`], ans: 0 },
+      { id: 44, era: `Humanismo`, sub: `Humanismo - Intertextualidade`, stem: `A intertextualidade entre o teatro popular de Gil Vicente e o "Auto da Compadecida" de Ariano Suassuna manifesta-se sobretudo:`, opts: [`no uso do julgamento pós-morte como tribunal satírico dos vícios sociais e religiosos`, `na adoção rigorosa da língua galego-portuguesa do século XIII`, `na ausência de personagens populares e na exaltação da aristocracia`, `na imitação do soneto clássico camoniano`], ans: 0 },
+      { id: 45, era: `Humanismo`, sub: `Humanismo - Medida Velha`, stem: `Na métrica tradicional portuguesa cultivada no Humanismo ("medida velha"), os versos mais frequentes são:`, opts: [`as redondilhas menores (5 sílabas) e as redondilhas maiores (7 sílabas poéticas)`, `os decassílabos heroicos e sáficos de 10 sílabas`, `os alexandrinos franceses de 12 sílabas`, `os versos livres sem contagem silábica`], ans: 0 },
+      { id: 46, era: `Humanismo`, sub: `Humanismo - Gil Vicente`, stem: `Em "O Velho da Horta" ou na figura do Fidalgo D. Anrique, Gil Vicente ridiculariza:`, opts: [`a presunção aristocrática e as ilusões amorosas incompatíveis com a realidade social`, `o rigor científico das medições astronômicas de Pedro Nunes`, `a pureza espiritual dos ermitães da Serra da Estrela`, `o patriotismo épico das armadas de Vasco da Gama`], ans: 0 },
+      { id: 47, era: `Humanismo`, sub: `Humanismo - Fernão Lopes`, stem: `A linguagem das crônicas de Fernão Lopes destaca-se pelo estilo vivo e visual porque o autor:`, opts: [`incorpora diálogos, falas coletivas e apelos ao leitor ("vede", "ora imaginai") que dinamizam a cena histórica`, `emprega frases curtas em ordem inversa típicas do Gongorismo`, `reduz os fatos a tabelas numéricas desprovidas de narrativa`, `rejeita o idioma português em favor do toscano de Dante`], ans: 0 },
+      { id: 48, era: `Humanismo`, sub: `Humanismo - Poética Medieval vs Humanista`, stem: `Comparando o eu lírico das cantigas de amor do Trovadorismo com os poemas do Cancioneiro Geral, observa-se no Humanismo:`, opts: [`maior exploração do engenho intelectual, trocadilhos e análise psicológica do desejo`, `retorno à oralidade camponesa anônima acompanhada de gaita de foles`, `eliminação completa da temática amorosa em favor da épica`, `emprego sistemático de versos livres modernistas`], ans: 0 },
+      { id: 49, era: `Humanismo`, sub: `Humanismo - Auto da Barca do Inferno`, stem: `Na fala do Sapateiro que alega ter ouvido muitas missas embora roubasse no couro dos sapatos, Gil Vicente critica:`, opts: [`a religiosidade meramente exterior e ritualística dissociada da ética cotidiana`, `a obrigatoriedade do trabalho artesanal nas guildas de Lisboa`, `a heresia protestante recém-chegada à Inglaterra`, `o abandono das práticas comerciais no porto do Tejo`], ans: 0 },
+      { id: 50, era: `Humanismo`, sub: `Humanismo - Anunciando o Renascimento`, stem: `O marco cronológico que encerra simbolicamente o Humanismo e inaugura o Classicismo em Portugal é o ano de 1527, quando:`, opts: [`Sá de Miranda retorna da Itália trazendo o soneto e o verso decassílabo ("medida nova")`, `Pero Vaz de Caminha redige a Carta sobre o achamento das terras de Vera Cruz`, `Luís de Camões publica a primeira edição de Os Lusíadas`, `o Marquês de Pombal expulsa os jesuítas do território português`], ans: 0 },
+
+      // --- CLASSICISMO & QUINHENTISMO (25) ---
+      { id: 51, era: `Classicismo`, sub: `Classicismo - Estética Renascentista`, stem: `O Classicismo português do século XVI fundamenta-se nos princípios do Renascimento europeu, dentre os quais NÃO se inclui:`, opts: [`o cultivo do exagero, da assimetria e do irracionalismo místico medieval`, `o antropocentrismo e a valorização da razão humana`, `a imitação dos modelos greco-latinos (mimese clássica)`, `a busca pelo equilíbrio formal, clareza e harmonia`], ans: 0 },
+      { id: 52, era: `Classicismo`, sub: `Classicismo - Medida Nova e Soneto`, stem: `Introduzido por Sá de Miranda em 1527, o soneto clássico de modelo italiano caracteriza-se por:`, opts: [`14 versos decassílabos distribuídos em dois quartetos e dois tercetos`, `estrofes irregulares com refrão paralelístico em redondilha menor`, `três oitavas rimas seguidas de um dístico satírico`, `versos brancos livres organizados em parágrafos de prosa`], ans: 0 },
+      { id: 53, era: `Classicismo`, sub: `Classicismo - Os Lusíadas (Estrutura)`, stem: `Em Os Lusíadas, de Luís de Camões, a estrutura épica clássica divide-se em cinco partes na seguinte sequência:`, opts: [`Proposição, Invocação, Dedicatória, Narração e Epílogo`, `Prólogo, Parabase, Êxodo, Catástrofe e Epílogo`, `Introdução, Tese, Antítese, Síntese e Peroração`, `Cantiga, Esparsa, Vilancete, Auto e Farsa`], ans: 0 },
+      { id: 54, era: `Classicismo`, sub: `Classicismo - Os Lusíadas (Herói Coletivo)`, stem: `Embora Vasco da Gama lidere a viagem à Índia narrada em Os Lusíadas, o verdadeiro herói da epopeia camoniana é:`, opts: [`o "peito ilustre lusitano", isto é, o povo português como sujeito coletivo das navegações`, `o deus Baco, vencedor final do concílio no Olimpo`, `o Velho do Restelo, símbolo do espírito expansionista`, `o gigante Adamastor, protetor das armadas portuguesas`], ans: 0 },
+      { id: 55, era: `Classicismo`, sub: `Classicismo - Velho do Restelo`, stem: `O episódio do Velho do Restelo no Canto IV de Os Lusíadas cumpre na epopeia a função crítica de:`, opts: [`alertar contra a cobiça, a vanglória e os custos humanos e econômicos das conquistas ultramarinas`, `celebrar incondicionalmente o enriquecimento rápido proporcionado pelo tráfico de especiarias`, `condenar a língua portuguesa em favor do latim imperial`, `anunciar a derrota de Vênus perante os planos de Baco`], ans: 0 },
+      { id: 56, era: `Classicismo`, sub: `Classicismo - Gigante Adamastor`, stem: `A aparição do Gigante Adamastor diante da esquadra no Cabo das Tormentas simboliza:`, opts: [`os perigos naturais e míticos dos oceanos desconhecidos superados pela ousadia humana`, `a submissão dos navegadores portugueses às crenças medievais sobre o fim do mundo`, `o idílio amoroso perfeito vivido na Ilha dos Amores`, `a crítica camoniana ao casamento de D. Pedro e Inês de Castro`], ans: 0 },
+      { id: 57, era: `Classicismo`, sub: `Classicismo - Lírica Camoniana`, stem: `"Amor é fogo que arde sem se ver; / é ferida que dói, e não se sente..." — Nesse celebre soneto de Camões, o sentimento amoroso é definido por meio de:`, opts: [`uma sequência de paradoxos e antíteses que antecipam tensões da estética barroca`, `uma narrativa épica sobre os feitos militares em Diu`, `uma crítica satírica aos fidalgos ociosos de Lisboa`, `uma descrição racional e serena desprovida de conflitos`], ans: 0 },
+      { id: 58, era: `Classicismo`, sub: `Classicismo - Neoplatonismo`, stem: `A concepção neoplatônica do amor presente em sonetos como "Transforma-se o amador na cousa amada" propõe que:`, opts: [`o amor verdadeiro eleva a alma do plano sensível e carnal para a contemplação da Beleza e da Ideia pura`, `o desejo físico imediato é a única realidade existente e deve ser satisfeito sem limites`, `a mulher deve ser tratada como inferior e serva do trovador`, `a paixão amorosa destrói a racionalidade clássica e merece condenação`], ans: 0 },
+      { id: 59, era: `Classicismo`, sub: `Classicismo - Desconcerto do Mundo`, stem: `Em poemas da fase madura de Camões ("Mudam-se os tempos, mudam-se as vontades" e "Ao desconcerto do mundo"), o eu lírico expressa:`, opts: [`a consciência melancólica da instabilidade universal e da injustiça moral que premia os maus e castiga os bons`, `a certeza otimista de que a razão renascentista já resolveu todas as mazelas sociais`, `a exaltação triunfal do Império Português no reinado de D. Sebastião`, `o retorno despreocupado à alegria das cantigas de romaria`], ans: 0 },
+      { id: 60, era: `Classicismo`, sub: `Classicismo - Inês de Castro`, stem: `O episódio lírico-trágico de Inês de Castro em Os Lusíadas contrasta com o tom guerreiro da epopeia ao abordar:`, opts: [`o amor sacrificado pela razão de Estado e pela intriga política da corte`, `a vitória naval de Vasco da Gama sobre os mouros de Moçambique`, `a conversão pacífica dos povos do Brasil pelos jesuítas`, `a descrição geográfica da Ilha dos Amores`], ans: 0 },
+      { id: 61, era: `Classicismo`, sub: `Classicismo - Mar Português`, stem: `Ao dialogar com Os Lusíadas no poema "Mar Português", Fernando Pessoa retoma o espírito da epopeia camoniana para:`, opts: [`reconhecer a grandeza da travessia oceânica sem ocultar a dor e as lágrimas que custou a Portugal`, `ridicularizar o uso de versos regulares por Luís de Camões`, `negar que as navegações quinhentistas tenham ocorrido historicamente`, `substituir a temática marítima pela exaltação da vida pastoril`], ans: 0 },
+      { id: 62, era: `Classicismo`, sub: `Classicismo - Mitologia e Cristianismo`, stem: `Em Os Lusíadas, Camões concilia a tradição pagã greco-romana (Vênus, Baco, Júpiter) com a visão cristã de que os portugueses expandiam a fé católica. Nessa obra, os deuses pagãos funcionam como:`, opts: [`alegorias poéticas e forças estéticas subordinadas, em última instância, à Providência cristã`, `provas de que Camões abandonou o catolicismo durante o exílio em Goa`, `personagens históricos reais da corte de D. João III`, `figuras satíricas semelhantes aos diabos de Gil Vicente`], ans: 0 },
+      { id: 63, era: `Classicismo`, sub: `Classicismo - Oitava Rima`, stem: `As estrofes de Os Lusíadas obedecem rigorosamente à forma da oitava rima, composta por:`, opts: [`oito versos decassílabos heroicos com esquema de rimas ABABABCC`, `dez versos em redondilha maior com esquema ABBA CDDC EE`, `quatro versos alexandrinos sem rima obrigatória`, `seis versos heterométricos em paralelismo perfeito`], ans: 0 },
+      { id: 64, era: `Classicismo`, sub: `Classicismo - Decassílabo Heroico`, stem: `O verso decassílabo heroico predominante na poesia épica camoniana apresenta acentuação tônica obrigatória nas sílabas:`, opts: [`6ª e 10ª`, `4ª, 8ª e 10ª`, `3ª, 7ª e 10ª`, `2ª, 5ª e 9ª`], ans: 0 },
+      { id: 65, era: `Classicismo`, sub: `Classicismo - Ilha dos Amores`, stem: `No Canto IX de Os Lusíadas, a Ilha dos Amores criada por Vênus para recompensar os navegadores simboliza:`, opts: [`a glória imortal e a elevação dos feitos humanos à altura divina pelo mérito heroico`, `a condenação moral dos prazeres terrenos pelo Tribunal da Inquisição`, `o fracasso econômico da expedição após a chegada a Calicute`, `a descoberta geográfica do litoral brasileiro por Pedro Álvares Cabral`], ans: 0 },
+      { id: 66, era: `Classicismo`, sub: `Quinhentismo - Carta de Caminha`, stem: `A Carta de Pero Vaz de Caminha a D. Manuel (1500) inaugura a literatura de informação sobre o Brasil com foco em:`, opts: [`descrever minuciosamente a terra, os povos indígenas e sugerir a catequese sob olhar eurocêntrico`, `criticar o projeto colonial português e defender a autonomia política indígena`, `compor um tratado barroco repleto de metáforas herméticas`, `registrar a revolução industrial incipiente nos engenhos do Recife`], ans: 0 },
+      { id: 67, era: `Classicismo`, sub: `Quinhentismo - Olhar Eurocêntrico`, stem: `Quando Caminha escreve que os indígenas "não lavram, nem criam", mas "o melhor fruto que dela se pode tirar me parece que será salvar esta gente", o texto revela:`, opts: [`a associação entre o projeto econômico mercantilista e a imposição religiosa católica sobre culturas autóctones`, `o reconhecimento pleno da igualdade religiosa e cultural sem intenção colonizadora`, `a adoção de categorias antropológicas modernas e relativistas`, `a recusa da Coroa portuguesa em ocupar o novo território`], ans: 0 },
+      { id: 68, era: `Classicismo`, sub: `Quinhentismo - Literatura Jesuítica`, stem: `Os autos teatrais e poemas compostos por Pe. José de Anchieta no Brasil do século XVI tinham função predominantemente:`, opts: [`pedagógica e catequética, adaptando formas medievais e línguas (português, tupi, espanhol) para converter os indígenas`, `estética pura, destinada aos salões aristocráticos de Florença`, `satírica contra a Companhia de Jesus e contra a Igreja Católica`, `científica, voltada à divulgação do heliocentrismo copernicano`], ans: 0 },
+      { id: 69, era: `Classicismo`, sub: `Quinhentismo - Tratadistas`, stem: `Obras como o "Tratado da Terra do Brasil" de Pero de Magalhães Gândavo tinham por finalidade prática:`, opts: [`incentivar a imigração e a colonização portuguesa destacando as riquezas naturais da colônia`, `narrar em versos épicos a guerra de Tróia`, `denunciar os abusos da escravidão africana nos quilombos`, `organizar antologias da poesia lírica produzida em Salvador`], ans: 0 },
+      { id: 70, era: `Classicismo`, sub: `Classicismo - Camões e Redondilhas`, stem: `Embora seja o mestre do decassílabo clássico, Camões também escreveu versos em medida velha (como "Descalça vai para a fonte / Lianor pela verdura"). Esse fato demonstra:`, opts: [`que o Classicismo português conviveu com a tradição lírica ibérica anterior sem apagá-la totalmente`, `que Camões desconhecia a métrica italiana de Petrarca`, `que as redondilhas foram criadas apenas no Barroco baiano`, `que Lianor é uma alegoria épica da conquista de Ormuz`], ans: 0 },
+      { id: 71, era: `Classicismo`, sub: `Classicismo - Carpe Diem Horaciano`, stem: `A retomada do tema latino do "carpe diem" por autores clássicos e renascentistas expressa:`, opts: [`a consciência da fugacidade da juventude e o convite racional a viver o presente com equilíbrio`, `o desprezo total pela existência terrena em nome do martírio medieval`, `o elogio do fanatismo religioso da Contrarreforma`, `a exaltação da melancolia passiva diante da morte inevitável`], ans: 0 },
+      { id: 72, era: `Classicismo`, sub: `Classicismo - Epigrama e Dedicatória`, stem: `Na Dedicatória de Os Lusíadas, Camões dirige o poema ao jovem rei D. Sebastião com o propósito político de:`, opts: [`exortar o monarca a retomar os feitos heroicos e preservar a grandeza do império português`, `solicitar o fechamento dos portos portugueses ao comércio oriental`, `convencer o rei a abdicar do trono em favor da Espanha`, `criticar a fé cristã como obstáculo ao desenvolvimento científico`], ans: 0 },
+      { id: 73, era: `Classicismo`, sub: `Classicismo - Verossimilhança e Decoro`, stem: `Na poética clássica inspirada em Aristóteles e Horácio, o princípio do "decoro" exige que:`, opts: [`haja adequação entre o gênero literário, a elevação do estilo e o caráter das personagens`, `o poeta misture vocabulário obsceno nos momentos solenes da epopeia`, `cada estrofe possua exatamente três paradoxos semânticos`, `o texto recuse qualquer modelo literário anterior`], ans: 0 },
+      { id: 74, era: `Classicismo`, sub: `Quinhentismo - Discurso Crítico Contemporâneo`, stem: `Ao confrontar a Carta de Caminha com discursos contemporâneos de lideranças indígenas como Sonia Guajajara ou poemas de Eliane Potiguara, observa-se:`, opts: [`a passagem do olhar estrangeiro que objetifica e tutela o indígena para o protagonismo e a voz própria dos povos originários`, `que a língua tupi desapareceu sem deixar marcas no português do Brasil`, `que os textos quinhentistas já defendiam a demarcação autônoma de terras indígenas`, `a identidade ideológica perfeita entre o projeto colonial e a literatura indígena atual`], ans: 0 },
+      { id: 75, era: `Classicismo`, sub: `Classicismo - Crise do Renascimento`, stem: `Na última estrofe de Os Lusíadas ("No mais, Musa, no mais, que a Lira tenho / Destemperada e a voz enrouquecida"), o tom desencantado de Camões já prenuncia:`, opts: [`a crise dos valores renascentistas e a angústia espiritual que marcarão o Barroco`, `a euforia positivista do progresso industrial europeu`, `o retorno à alegria despreocupada das bailias medievais`, `a adesão ao bucolismo sereno do Arcadismo mineiro`], ans: 0 },
+
+      // --- BARROCO (25) ---
+      { id: 76, era: `Barroco`, sub: `Barroco - Contexto e Contrarreforma`, stem: `O Barroco desenvolve-se entre o final do século XVI e o século XVII em um contexto histórico marcado por:`, opts: [`a Reforma Protestante, a Contrarreforma católica e a crise do otimismo renascentista`, `a Revolução Francesa e a consolidação dos ideais iluministas da Enciclopédia`, `a abolição da escravatura e a industrialização acelerada da Europa`, `o expansionismo das Cruzadas medievais rumo a Jerusalém`], ans: 0 },
+      { id: 77, era: `Barroco`, sub: `Barroco - Dualismo e Conflito`, stem: `A visão de mundo barroca é definida como "dualista" ou "tensionada" porque o homem seiscentista vive dilacerado entre:`, opts: [`a atração pelos prazeres terrenos (antropocentrismo) e o temor da condenação eterna (teocentrismo)`, `a vida urbana industrial e a paz campestre dos pastores árcades`, `o verso livre modernista e a gramática normativa parnasiana`, `a fé islâmica e os mitos nórdicos da Idade Média`], ans: 0 },
+      { id: 78, era: `Barroco`, sub: `Barroco - Cultismo`, stem: `O "Cultismo" (ou Gongorismo), uma das vertentes estilísticas do Barroco, caracteriza-se principalmente pelo:`, opts: [`rebuscamento formal da linguagem, uso intenso de metáforas raras, hipérbatos, aliterações e jogos sonoros`, `encadeamento lógico e silogístico de ideias sem qualquer ornamento sensorial`, `uso de linguagem simples, direta e despojada em ordem direta`, `emprego exclusivo de neologismos indígenas e termos coloquiais modernos`], ans: 0 },
+      { id: 79, era: `Barroco`, sub: `Barroco - Conceptismo`, stem: `O "Conceptismo" (ou Quevedismo), predominante na prosa do Padre Antônio Vieira, distingue-se por:`, opts: [`operar com o jogo de ideias, raciocínios lógicos, analogias bíblicas e silogismos persuasivos`, `privilegiar apenas a sonoridade das palavras em detrimento do sentido`, `abandonar a argumentação retórica em favor da descrição impressionista da paisagem`, `imitar a métrica das cantigas de amigo medievais`], ans: 0 },
+      { id: 80, era: `Barroco`, sub: `Barroco - Antítese e Paradoxo`, stem: `"Ardor em firme coração nascido; / pranto por belos olhos derramado; / incêndio em mares de água disfarçado..." — Nos versos de Gregório de Matos, o conflito interior do sujeito barroco materializa-se através de:`, opts: [`antíteses e paradoxos (fogo e água em oposição simultânea)`, `pleonasmos viciosos sem intenção expressiva`, `eufemismos suaves próprios do estilo rococó`, `onomatopeias infantis de valor meramente descritivo`], ans: 0 },
+      { id: 81, era: `Barroco`, sub: `Barroco - Gregório de Matos (Sátira)`, stem: `Conhecido como "Boca do Inferno", Gregório de Matos na sua poesia satírica voltada à sociedade baiana do século XVII:`, opts: [`atacou com mordacidade governantes corruptos, padres hipócritas, falsos fidalgos e a avareza colonial`, `elogiou a administração honesta e igualitária dos governadores-gerais na Bahia`, `manteve-se neutro diante dos conflitos sociais de Salvador`, `defendeu a imediata independência republicana do Brasil em relação a Portugal`], ans: 0 },
+      { id: 82, era: `Barroco`, sub: `Barroco - Gregório de Matos (Religiosa)`, stem: `"Pequei, Senhor; mas não porque hei pecado, / da vossa alta clemência me despido..." — Nesse soneto religioso, Gregório de Matos constrói uma argumentação em que:`, opts: [`o próprio pecado humano serve de justificativa para exaltar a grandeza da misericórdia divina`, `o pecador nega a autoridade de Deus e reivindica a salvação por mérito próprio`, `a razão científica substitui a necessidade do perdão cristão`, `o poeta celebra os deuses pagãos do panteão clássico`], ans: 0 },
+      { id: 83, era: `Barroco`, sub: `Barroco - Gregório de Matos (Lírica Amorosa)`, stem: `Na lírica amorosa de Gregório de Matos, a representação da mulher oscila frequentemente entre:`, opts: [`a idealização espiritual quase angelical e o erotismo sensual marcado pela culpa ou pelo apelo do carpe diem`, `a igualdade jurídica moderna e a militância política feminista`, `a submissão feudal das cantigas de amigo e a indiferença estoica`, `a caricatura grotesca desprovida de qualquer referência clássica`], ans: 0 },
+      { id: 84, era: `Barroco`, sub: `Barroco - Efemeridade e Carpe Diem`, stem: `"Goza, goza da flor da fermosura, / antes que o frio da madura idade / tronco deixe arrasado a formosura." — O tópico barroco expresso nesses versos combina:`, opts: [`o carpe diem (aproveitar o instante) com a angústia do tempus fugit (fugacidade do tempo e da beleza)`, `o otimismo evolucionista do século XIX com a fé no progresso técnico`, `a serenidade pastoril do locus amoenus sem temor da morte`, `a crítica econômica ao monopólio açucareiro baiano`], ans: 0 },
+      { id: 85, era: `Barroco`, sub: `Barroco - Pe. Antônio Vieira`, stem: `No "Sermão da Sexagésima", Padre Antônio Vieira critica os pregadores cultistas da época utilizando a metáfora do semeador para defender que:`, opts: [`o sermão deve converter e transformar a vida prática dos ouvintes, e não apenas exibir vaidade verbal estéril`, `o pregador deve usar palavras ininteligíveis para confundir os fiéis`, `a pregação católica deve evitar qualquer referência às Sagradas Escrituras`, `a oratória sagrada tem função exclusivamente lúdica e ornamental`], ans: 0 },
+      { id: 86, era: `Barroco`, sub: `Barroco - Conceptismo em Vieira`, stem: `No "Sermão pelo Bom Sucesso das Armas de Portugal contra as de Holanda", Vieira chega a argumentar com o próprio Deus que, se Ele permitir a derrota portuguesa, os hereges calvinistas profanarão Seus altares. Esse procedimento ilustra:`, opts: [`a audácia dialética do conceptismo vieiriano, que usa silogismos e inversões lógicas para persuadir`, `a indiferença de Vieira diante das invasões holandesas no Nordeste`, `o emprego do cultismo puramente musical sem estrutura argumentativa`, `a adesão de Vieira ao protestantismo holandês`], ans: 0 },
+      { id: 87, era: `Barroco`, sub: `Barroco - Vieira e os Escravizados`, stem: `Nos sermões dirigidos aos senhores de engenho e aos africanos escravizados na Bahia, a posição do Padre Antônio Vieira revela:`, opts: [`a contradição histórica de condenar os castigos cruéis dos senhores enquanto justifica a escravidão como via de salvação espiritual cristã`, `a defesa da abolição imediata e da revolução armada nos engenhos`, `a total indiferença ao sofrimento físico dos trabalhadores escravizados`, `a negação da humanidade e da alma dos povos africanos`], ans: 0 },
+      { id: 88, era: `Barroco`, sub: `Barroco - Vieira e os Indígenas`, stem: `Em "Sermão de Santo Antônio aos Peixes", localizado no Maranhão, Vieira utiliza a alegoria dos peixes grandes que comem os pequenos para:`, opts: [`denunciar indiretamente a cobiça e a exploração praticadas pelos colonos portugueses contra os indígenas`, `apresentar um tratado de biologia marinha dedicado ao rei D. João IV`, `elogiar a atuação predatória dos bandeirantes no sertão`, `celebrar a abundância pesqueira da costa baiana sem sentido moral`], ans: 0 },
+      { id: 89, era: `Barroco`, sub: `Barroco - Bento Teixeira`, stem: `Considerada tradicionalmente o marco inicial do Barroco no Brasil (1601), a obra "Prosopopeia", de Bento Teixeira:`, opts: [`imita o modelo épico camoniano em oitavas rimas para louvar o donatário de Pernambuco, Jorge de Albuquerque Coelho`, `reúne sonetos satíricos contra a governança de Salvador`, `apresenta sermões conceptistas proferidos na Capela Real de Lisboa`, `inaugura o romance urbano realista no Rio de Janeiro`], ans: 0 },
+      { id: 90, era: `Barroco`, sub: `Barroco - Poema Visual`, stem: `Certas composições barrocas exploravam a disposição gráfica das palavras na página (como labirintos poéticos ou poemas figurados atribuídos ao período). Essa prática demonstra que o Barroco:`, opts: [`valorizava a integração sensorial entre palavra, imagem e engenho formal, dialogando inclusive com a poesia concreta moderna`, `rejeitava qualquer experimentação visual em favor da linearidade clássica`, `proibia a leitura visual dos poemas, restringindo-os ao canto coral`, `copiava fielmente o layout dos jornais impressos do século XX`], ans: 0 },
+      { id: 91, era: `Barroco`, sub: `Barroco - Desconcerto do Mundo em Gregório`, stem: `Quando Gregório de Matos escreve "Que os brasileiros são bestas, / e estarão a trabalhar / toda a vida por manter / maganos de Portugal", o poeta manifesta:`, opts: [`um sentimento nativista incipiente que denuncia a exploração metropolitana sobre a colônia`, `a defesa entusiástica do pacto colonial português`, `um elogio à pureza moral dos aventureiros recém-chegados da metrópole`, `uma reflexão metafísica alheia às condições históricas da Bahia`], ans: 0 },
+      { id: 92, era: `Barroco`, sub: `Barroco - Feismo e Grotesco`, stem: `Diferentemente do equilíbrio idealizado do Classicismo, a estética barroca admite o "feísmo" e o grotesco na descrição da decadência física ou moral porque:`, opts: [`busca provocar impacto emocional e evidenciar a vaidade ilusória da matéria diante da morte`, `desconhecia as regras básicas da métrica decassílaba`, `pretendia imitar a leveza colorida da pintura rococó francesa`, `negava a existência do pecado original na doutrina católica`], ans: 0 },
+      { id: 93, era: `Barroco`, sub: `Barroco - Claro-Escuro`, stem: `Nas artes plásticas e na literatura barroca, o contraste violento entre luz e sombra ("chiaroscuro") traduz:`, opts: [`o drama existencial entre a graça divina e as trevas do pecado ou da finitude humana`, `a objetividade fotográfica da paisagem sem carga simbólica`, `a transparência racionalista proposta pelos enciclopedistas`, `a uniformidade plana dos afrescos medievais`], ans: 0 },
+      { id: 94, era: `Barroco`, sub: `Barroco - Assíndeto e Polissíndeto`, stem: `"Nasce o Sol, e não dura mais que um dia, / Depois da Luz se segue a noite escura, / Em tristes sombras morre a formosura, / Em contínuas tristezas a alegria." — A gradação desse quarteto de Gregório de Matos enfatiza:`, opts: [`a inevitável transitoriedade das coisas terrenas e a passagem rápida da beleza ao ocaso`, `a permanência eterna da juventude humana na terra`, `o elogio da vida burguesa nos centros comerciais`, `a vitória da razão iluminista sobre as superstições`], ans: 0 },
+      { id: 95, era: `Barroco`, sub: `Barroco - Conceptismo (Sermão da Sexagésima)`, stem: `No Sermão da Sexagésima, ao afirmar que "Para falar ao vento bastam palavras; para falar ao coração são necessárias obras", Vieira estabelece um contraste típico do conceptismo baseado em:`, opts: [`paralelismo sintático e oposição lógica entre discurso vazio e testemunho ético`, `alusões mitológicas greco-romanas sem propósito cristão`, `hipérboles grotescas sobre a anatomia do corpo humano`, `rimas ricas em redondilha menor de caráter popular`], ans: 0 },
+      { id: 96, era: `Barroco`, sub: `Barroco - Metonímia e Hipérbato`, stem: `Na poesia cultista seiscentista, o emprego frequente do hipérbato (inversão acentuada da ordem direta das palavras na frase) visa:`, opts: [`criar tensão sintática, estranhamento estético e exigir decifração erudita do leitor`, `facilitar a alfabetização rápida das camadas populares da colônia`, `reproduzir fielmente a espontaneidade da fala cotidiana nas ruas`, `eliminar as figuras de linguagem do discurso poético`], ans: 0 },
+      { id: 97, era: `Barroco`, sub: `Barroco - Sátira e Valores da Época`, stem: `Ao analisar criticamente a poesia satírica de Gregório de Matos, os estudos literários contemporâneos observam que, além de criticar a corrupção, seus versos:`, opts: [`também reproduzem preconceitos raciais, de classe e de gênero característicos da sociedade escravocrata colonial`, `antecipam integralmente os direitos humanos universais sem contradições`, `limitam-se a traduzir sátiras de Horácio sem referência à Bahia`, `defendem a igualdade social plena entre senhores, negros e indígenas`], ans: 0 },
+      { id: 98, era: `Barroco`, sub: `Barroco - Alegoria Barroca`, stem: `Na prosa barroca brasileira, além dos sermões de Vieira, destaca-se a "História do Futuro", na qual o autor articula:`, opts: [`interpretação profética das Escrituras e o papel messiânico de Portugal na história cristã`, `dados estatísticos impessoais sobre a produção de açúcar no século XVII`, `críticas iluministas contra a existência da monarquia absolutista`, `sonetos líricos dedicados à cidade de Vila Rica`], ans: 0 },
+      { id: 99, era: `Barroco`, sub: `Barroco - Cultismo vs Conceptismo`, stem: `Qual alternativa sintetiza corretamente a relação entre Cultismo e Conceptismo na produção literária barroca?`, opts: [`não são escolas opostas, mas duas tendências complementares do estilo barroco — uma centrada no jogo formal/sensorial e outra no jogo lógico/conceitual`, `o Cultismo ocorreu apenas no Brasil e o Conceptismo apenas em Portugal`, `o Cultismo pertence ao Classicismo e o Conceptismo pertence ao Romantismo`, `ambos rejeitam o uso de antíteses, metáforas e paradoxos`], ans: 0 },
+      { id: 100, era: `Barroco`, sub: `Barroco - Transição ao Arcadismo`, stem: `A reação literária que sucederá ao Barroco no século XVIII (Arcadismo) surgirá justamente para combater:`, opts: [`os excessos ornamentais, o hermetismo sintático e o rebuscamento exagerado do estilo seiscentista`, `a simplicidade da natureza campestre e o ideal clássico de equilíbrio`, `a influência da cultura greco-romana na poesia ocidental`, `o uso de versos decassílabos nos sonetos líricos`], ans: 0 }
+    ];
+
+    // =========================================================================
+    // 2. PRE-POPULATED REALISTIC SAMPLE DATA (ALL 4 CLASSES) + STATE PERSISTENCE
+    // =========================================================================
+    const TEACHER_PIN = `Maru6724@`;
+
+    const INITIAL_SAMPLE_RESULTS = [
+      {
+        id: `sample-1`,
+        name: `Ana Clara Ferreira Lima`,
+        turma: `1º DS-A`,
+        scorePct: 84,
+        mencao: `MB`,
+        durationSec: 2715,
+        durationStr: `00:45:15`,
+        startTime: `08:02:11`,
+        endTime: `08:47:26`,
+        diagSummary: `Domínio sólido em Trovadorismo e Classicismo; Reforçar Conceptismo em Pe. Antônio Vieira no Barroco.`,
+        topicErrors: {
+          'Trovadorismo - Cantiga de Amor': 1, 'Trovadorismo - Cantiga de Amigo': 0, 'Trovadorismo - Escárnio/Maldizer': 1,
+          'Humanismo - Teatro Vicentino': 2, 'Humanismo - Crônica e Palaciana': 1,
+          'Classicismo - Camões Épico/Lírico': 2, 'Quinhentismo - Informativa/Jesuítica': 1,
+          'Barroco - Cultismo e Gregório': 3, 'Barroco - Conceptismo em Vieira': 5
+        }
+      },
+      {
+        id: `sample-2`,
+        name: `Bruno Henrique Costa Silva`,
+        turma: `1º DS-B`,
+        scorePct: 75,
+        mencao: `B`,
+        durationSec: 3120,
+        durationStr: `00:52:00`,
+        startTime: `08:05:40`,
+        endTime: `08:57:40`,
+        diagSummary: `Bom desempenho geral; Reforçar Medida Nova / Soneto no Classicismo e Conceptismo em Pe. Antônio Vieira no Barroco.`,
+        topicErrors: {
+          'Trovadorismo - Cantiga de Amor': 2, 'Trovadorismo - Cantiga de Amigo': 2, 'Trovadorismo - Escárnio/Maldizer': 2,
+          'Humanismo - Teatro Vicentino': 3, 'Humanismo - Crônica e Palaciana': 2,
+          'Classicismo - Camões Épico/Lírico': 4, 'Quinhentismo - Informativa/Jesuítica': 2,
+          'Barroco - Cultismo e Gregório': 3, 'Barroco - Conceptismo em Vieira': 5
+        }
+      },
+      {
+        id: `sample-3`,
+        name: `Camila Vitória Mendes Rocha`,
+        turma: `1º ADM-A`,
+        scorePct: 62,
+        mencao: `R`,
+        durationSec: 2890,
+        durationStr: `00:48:10`,
+        startTime: `09:10:05`,
+        endTime: `09:58:15`,
+        diagSummary: `Regular; Reforçar Teatro Vicentino no Humanismo, Camões Lírico no Classicismo e Conceptismo em Pe. Antônio Vieira no Barroco.`,
+        topicErrors: {
+          'Trovadorismo - Cantiga de Amor': 3, 'Trovadorismo - Cantiga de Amigo': 2, 'Trovadorismo - Escárnio/Maldizer': 3,
+          'Humanismo - Teatro Vicentino': 5, 'Humanismo - Crônica e Palaciana': 4,
+          'Classicismo - Camões Épico/Lírico': 6, 'Quinhentismo - Informativa/Jesuítica': 3,
+          'Barroco - Cultismo e Gregório': 5, 'Barroco - Conceptismo em Vieira': 7
+        }
+      },
+      {
+        id: `sample-4`,
+        name: `Daniel Augusto Pereira Gomes`,
+        turma: `1º ADM-B`,
+        scorePct: 24,
+        mencao: `I`,
+        durationSec: 1640,
+        durationStr: `00:27:20`,
+        startTime: `10:15:12`,
+        endTime: `10:42:32`,
+        diagSummary: `Insuficiente crítico; Retomar Trovadorismo (Cantigas), Humanismo (Gil Vicente), Classicismo e Barroco integralmente.`,
+        topicErrors: {
+          'Trovadorismo - Cantiga de Amor': 8, 'Trovadorismo - Cantiga de Amigo': 7, 'Trovadorismo - Escárnio/Maldizer': 7,
+          'Humanismo - Teatro Vicentino': 10, 'Humanismo - Crônica e Palaciana': 8,
+          'Classicismo - Camões Épico/Lírico': 11, 'Quinhentismo - Informativa/Jesuítica': 7,
+          'Barroco - Cultismo e Gregório': 9, 'Barroco - Conceptismo em Vieira': 9
+        }
+      },
+      {
+        id: `sample-5`,
+        name: `Eduarda Nascimento Teixeira`,
+        turma: `1º DS-A`,
+        scorePct: 91,
+        mencao: `MB`,
+        durationSec: 3425,
+        durationStr: `00:57:05`,
+        startTime: `08:01:02`,
+        endTime: `08:58:07`,
+        diagSummary: `Excelência em todos os eixos; Pequenos ajustes apenas em Quinhentismo e Sátira Barroca.`,
+        topicErrors: {
+          'Trovadorismo - Cantiga de Amor': 0, 'Trovadorismo - Cantiga de Amigo': 1, 'Trovadorismo - Escárnio/Maldizer': 0,
+          'Humanismo - Teatro Vicentino': 1, 'Humanismo - Crônica e Palaciana': 1,
+          'Classicismo - Camões Épico/Lírico': 1, 'Quinhentismo - Informativa/Jesuítica': 2,
+          'Barroco - Cultismo e Gregório': 1, 'Barroco - Conceptismo em Vieira': 2
+        }
+      },
+      {
+        id: `sample-6`,
+        name: `Felipe Cardoso Albuquerque`,
+        turma: `1º ADM-A`,
+        scorePct: 54,
+        mencao: `R`,
+        durationSec: 2510,
+        durationStr: `00:41:50`,
+        startTime: `09:12:30`,
+        endTime: `09:54:20`,
+        diagSummary: `Regular; Reforçar Cultismo/Antítese em Gregório de Matos e Conceptismo em Pe. Antônio Vieira no Barroco.`,
+        topicErrors: {
+          'Trovadorismo - Cantiga de Amor': 4, 'Trovadorismo - Cantiga de Amigo': 3, 'Trovadorismo - Escárnio/Maldizer': 4,
+          'Humanismo - Teatro Vicentino': 5, 'Humanismo - Crônica e Palaciana': 5,
+          'Classicismo - Camões Épico/Lírico': 7, 'Quinhentismo - Informativa/Jesuítica': 4,
+          'Barroco - Cultismo e Gregório': 7, 'Barroco - Conceptismo em Vieira': 7
+        }
+      },
+      {
+        id: `sample-7`,
+        name: `Gabriela Martins Vasconcelos`,
+        turma: `1º DS-B`,
+        scorePct: 79,
+        mencao: `MB`,
+        durationSec: 2980,
+        durationStr: `00:49:40`,
+        startTime: `08:04:19`,
+        endTime: `08:53:59`,
+        diagSummary: `Muito Bom; Reforçar Conceptismo em Pe. Antônio Vieira no Barroco e Paralelismo no Trovadorismo.`,
+        topicErrors: {
+          'Trovadorismo - Cantiga de Amor': 1, 'Trovadorismo - Cantiga de Amigo': 3, 'Trovadorismo - Escárnio/Maldizer': 1,
+          'Humanismo - Teatro Vicentino': 2, 'Humanismo - Crônica e Palaciana': 2,
+          'Classicismo - Camões Épico/Lírico': 3, 'Quinhentismo - Informativa/Jesuítica': 1,
+          'Barroco - Cultismo e Gregório': 3, 'Barroco - Conceptismo em Vieira': 5
+        }
+      },
+      {
+        id: `sample-8`,
+        name: `Lucas Gabriel Barbosa Ribeiro`,
+        turma: `1º ADM-B`,
+        scorePct: 68,
+        mencao: `R`,
+        durationSec: 2645,
+        durationStr: `00:44:05`,
+        startTime: `10:14:00`,
+        endTime: `10:58:05`,
+        diagSummary: `Regular; Reforçar Neoplatonismo em Camões e Conceptismo em Pe. Antônio Vieira no Barroco.`,
+        topicErrors: {
+          'Trovadorismo - Cantiga de Amor': 2, 'Trovadorismo - Cantiga de Amigo': 2, 'Trovadorismo - Escárnio/Maldizer': 3,
+          'Humanismo - Teatro Vicentino': 4, 'Humanismo - Crônica e Palaciana': 3,
+          'Classicismo - Camões Épico/Lírico': 5, 'Quinhentismo - Informativa/Jesuítica': 3,
+          'Barroco - Cultismo e Gregório': 4, 'Barroco - Conceptismo em Vieira': 6
+        }
+      }
+    ];
+
+    // =========================================================================
+    // 3. RUNTIME STATE
+    // =========================================================================
+    let studentRecords = [...INITIAL_SAMPLE_RESULTS];
+    let professorUnlocked = false;
+    let activeExam = null;
+    let timerInterval = null;
+    let antiFraudBound = false;
+
+    // Group subtopics cleanly for macro pedagogical diagnostics
+    function mapSubtopicToCluster(sub) {
+      if (sub.includes(`Cantiga de Amor`) || sub.includes(`Coita`) || sub.includes(`Provença`)) return `Trovadorismo - Cantiga de Amor`;
+      if (sub.includes(`Cantiga de Amigo`) || sub.includes(`Paralelismo`)) return `Trovadorismo - Cantiga de Amigo`;
+      if (sub.startsWith(`Trovadorismo`)) return `Trovadorismo - Escárnio/Maldizer`;
+      if (sub.includes(`Gil Vicente`) || sub.includes(`Barca`) || sub.includes(`Inês`) || sub.includes(`Teatro`) || sub.includes(`Farsa`)) return `Humanismo - Teatro Vicentino`;
+      if (sub.startsWith(`Humanismo`)) return `Humanismo - Crônica e Palaciana`;
+      if (sub.startsWith(`Quinhentismo`)) return `Quinhentismo - Informativa/Jesuítica`;
+      if (sub.startsWith(`Classicismo`)) return `Classicismo - Camões Épico/Lírico`;
+      if (sub.includes(`Conceptismo`) || sub.includes(`Vieira`) || sub.includes(`Alegoria Barroca`)) return `Barroco - Conceptismo em Vieira`;
+      return `Barroco - Cultismo e Gregório`;
+    }
+
+    const CLUSTER_TOTALS = {};
+    QUESTION_BANK.forEach((q) => {
+      const c = mapSubtopicToCluster(q.sub);
+      CLUSTER_TOTALS[c] = (CLUSTER_TOTALS[c] || 0) + 1;
+    });
+
+    // =========================================================================
+    // 4. UTILITIES & SHUFFLE (FISHER-YATES)
+    // =========================================================================
+    function fisherYatesShuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = copy[i];
+        copy[i] = copy[j];
+        copy[j] = tmp;
+      }
+      return copy;
+    }
+
+    function formatDuration(sec) {
+      const h = String(Math.floor(sec / 3600)).padStart(2, `0`);
+      const m = String(Math.floor((sec % 3600) / 60)).padStart(2, `0`);
+      const s = String(sec % 60).padStart(2, `0`);
+      return `${h}:${m}:${s}`;
+    }
+
+    function formatClock(dateObj) {
+      return dateObj.toTimeString().slice(0, 8);
+    }
+
+    function computeMencao(pct) {
+      if (pct < 50) return `I`;
+      if (pct <= 74) return `R`;
+      if (pct === 75) return `B`;
+      return `MB`;
+    }
+
+    function getMencaoDescription(mencao, pct) {
+      if (mencao === `I`) {
+        return pct <= 25
+          ? `Insuficiente (≤ 25%) — Necessita recomposição imediata dos eixos literários.`
+          : `Insuficiente (< 50%) — Necessita retomada estruturada dos conteúdos da 1ª série.`;
+      }
+      if (mencao === `R`) return `Regular (50% – 74%) — Compreensão parcial; reforçar pontos críticos indicados.`;
+      if (mencao === `B`) return `Bom (75%) — Desempenho sólido alinhado às matrizes FUVEST/ITA/ENEM.`;
+      return `Muito Bom (> 75% – 100%) — Excelente proficiência analítica e histórica.`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`);
+    }
+
+    // =========================================================================
+    // 5. STATE PERSISTENCE VIA NOTEBOOK SHIM API
+    // =========================================================================
+    async function loadPersistedState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && Array.isArray(saved.studentRecords) && saved.studentRecords.length > 0) {
+            studentRecords = saved.studentRecords;
+          }
+        } catch (err) {
+          // Keep initial sample records gracefully
+        }
+      }
+    }
+
+    async function persistState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+        try {
+          await window.notebookAppApi.setAppState({
+            studentRecords: studentRecords
+          });
+        } catch (err) {
+          // Ignore transient host storage errors
+        }
+      }
+    }
+
+    // =========================================================================
+    // 6. VIEW NAVIGATION
+    // =========================================================================
+    function showPanel(panelId) {
+      const panels = document.querySelectorAll(`.view-panel`);
+      panels.forEach((p) => p.classList.remove(`active`));
+      const target = document.getElementById(panelId);
+      if (target) target.classList.add(`active`);
+    }
+
+    function switchTopView(target) {
+      const btnStudent = document.getElementById(`btn-nav-student`);
+      const btnProf = document.getElementById(`btn-nav-professor`);
+      if (target === `student`) {
+        if (btnStudent) btnStudent.classList.add(`active-tab`);
+        if (btnProf) btnProf.classList.remove(`active-tab`);
+        if (activeExam && !activeExam.finished) {
+          showPanel(`view-student-quiz`);
+        } else if (activeExam && activeExam.finished) {
+          showPanel(`view-student-result`);
+        } else {
+          showPanel(`view-student-intro`);
+        }
+      } else if (target === `professor`) {
+        if (btnStudent) btnStudent.classList.remove(`active-tab`);
+        if (btnProf) btnProf.classList.add(`active-tab`);
+        showPanel(`view-professor-dashboard`);
+        renderProfessorDashboard();
+      }
+    }
+
+    // =========================================================================
+    // 7. ANTI-FRAUD MECHANISMS
+    // =========================================================================
+    function showAntiFraudToast(message) {
+      const toast = document.getElementById(`anti-fraud-toast`);
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add(`visible`);
+      setTimeout(() => {
+        if (toast) toast.classList.remove(`visible`);
+      }, 3200);
+    }
+
+    function setupWatermarks(studentName, turma) {
+      const container = document.getElementById(`watermark-container`);
+      if (!container) return;
+      const text = `ETEC • ${studentName.toUpperCase()} • ${turma} • PROIBIDA CÓPIA`;
+      let html = ``;
+      for (let i = 0; i < 12; i++) {
+        html += `<div class="watermark-stamp">${escapeHtml(text)}</div>`;
+      }
+      container.innerHTML = html;
+    }
+
+    function bindAntiFraudListeners() {
+      if (antiFraudBound) return;
+      antiFraudBound = true;
+
+      const zone = document.getElementById(`exam-protected-zone`);
+      if (zone) {
+        zone.addEventListener(`contextmenu`, (e) => {
+          if (activeExam && !activeExam.finished) {
+            e.preventDefault();
+            showAntiFraudToast(`Clique direito desativado durante a avaliação diagnóstica.`);
+          }
+        });
+        zone.addEventListener(`copy`, (e) => {
+          if (activeExam && !activeExam.finished) {
+            e.preventDefault();
+            showAntiFraudToast(`Cópia de conteúdo bloqueada pelo protocolo da avaliação.`);
+          }
+        });
+      }
+
+      document.addEventListener(`keydown`, (e) => {
+        if (!activeExam || activeExam.finished) return;
+        const quizPanel = document.getElementById(`view-student-quiz`);
+        if (!quizPanel || !quizPanel.classList.contains(`active`)) return;
+
+        const key = (e.key || ``).toLowerCase();
+        const isCtrlOrCmd = e.ctrlKey || e.metaKey;
+
+        if (
+          e.key === `F12` ||
+          e.key === `PrintScreen` ||
+          (isCtrlOrCmd && (key === `c` || key === `v` || key === `u` || key === `s` || key === `p`)) ||
+          (isCtrlOrCmd && e.shiftKey && (key === `i` || key === `j` || key === `c`))
+        ) {
+          e.preventDefault();
+          showAntiFraudToast(`Atalho bloqueado durante a prova pelo sistema antifraude ETEC.`);
+        }
+      });
+    }
+
+    // =========================================================================
+    // 8. STUDENT EXAM FLOW
+    // =========================================================================
+    function startExam() {
+      const nameInput = document.getElementById(`student-name`);
+      const classSelect = document.getElementById(`student-class`);
+      const errBox = document.getElementById(`intro-error`);
+
+      const name = nameInput ? nameInput.value.trim() : ``;
+      const turma = classSelect ? classSelect.value : ``;
+
+      if (name.length < 3 || !turma) {
+        if (errBox) {
+          errBox.textContent = `Informe seu nome completo (mínimo 3 caracteres) e selecione sua sala antes de iniciar.`;
+          errBox.classList.add(`visible`);
+        }
+        return;
+      }
+      if (errBox) errBox.classList.remove(`visible`);
+
+      // Fisher-Yates shuffle on questions AND on each question's 4 options
+      const shuffledQuestions = fisherYatesShuffle(QUESTION_BANK).map((q) => {
+        const indexedOpts = q.opts.map((txt, idx) => ({ txt, isCorrect: idx === q.ans }));
+        const shuffledOpts = fisherYatesShuffle(indexedOpts);
+        return {
+          id: q.id,
+          era: q.era,
+          sub: q.sub,
+          stem: q.stem,
+          opts: shuffledOpts.map((o) => o.txt),
+          correctIdx: shuffledOpts.findIndex((o) => o.isCorrect)
+        };
+      });
+
+      const startDate = new Date();
+      activeExam = {
+        name: name,
+        turma: turma,
+        questions: shuffledQuestions,
+        answers: new Array(shuffledQuestions.length).fill(null),
+        currentIndex: 0,
+        startTimestamp: startDate.getTime(),
+        startTimeStr: formatClock(startDate),
+        finished: false
+      };
+
+      const teleName = document.getElementById(`tele-name`);
+      const teleClass = document.getElementById(`tele-class`);
+      if (teleName) teleName.textContent = name;
+      if (teleClass) teleClass.textContent = turma;
+
+      setupWatermarks(name, turma);
+      bindAntiFraudListeners();
+
+      if (timerInterval) clearInterval(timerInterval);
+      updateTimerDisplay();
+      timerInterval = setInterval(updateTimerDisplay, 1000);
+
+      showPanel(`view-student-quiz`);
+      renderCurrentQuestion();
+      renderQuestionMap();
+    }
+
+    function updateTimerDisplay() {
+      if (!activeExam || activeExam.finished) return;
+      const elapsedSec = Math.max(0, Math.floor((Date.now() - activeExam.startTimestamp) / 1000));
+      const el = document.getElementById(`tele-timer`);
+      if (el) el.textContent = `${activeExam.startTimeStr} • ${formatDuration(elapsedSec)}`;
+    }
+
+    function renderCurrentQuestion() {
+      if (!activeExam) return;
+      const idx = activeExam.currentIndex;
+      const q = activeExam.questions[idx];
+      const selectedIdx = activeExam.answers[idx];
+
+      const tagEl = document.getElementById(`q-topic-tag`);
+      const stemEl = document.getElementById(`q-stem-text`);
+      const optsEl = document.getElementById(`q-options-container`);
+      const prevBtn = document.getElementById(`btn-prev-q`);
+      const nextBtn = document.getElementById(`btn-next-q`);
+      const progText = document.getElementById(`tele-progress`);
+      const progBar = document.getElementById(`exam-progress-bar`);
+      const cursorLabel = document.getElementById(`q-cursor-label`);
+
+      if (tagEl) tagEl.textContent = `[${q.sub}]`;
+      if (stemEl) stemEl.textContent = q.stem;
+
+      const letters = [`A`, `B`, `C`, `D`];
+      if (optsEl) {
+        optsEl.innerHTML = q.opts.map((optTxt, i) => `
+          <button type="button" class="option-btn ${selectedIdx === i ? `selected` : ``}" onclick="selectOption(${i})">
+            <span class="option-letter">${letters[i]}</span>
+            <span>${escapeHtml(optTxt)}</span>
+          </button>
+        `).join(``);
+      }
+
+      if (prevBtn) prevBtn.disabled = idx === 0;
+      if (nextBtn) nextBtn.disabled = idx === activeExam.questions.length - 1;
+
+      const answeredCount = activeExam.answers.filter((a) => a !== null).length;
+      if (progText) progText.textContent = `${answeredCount} / ${activeExam.questions.length} respondidas`;
+      if (progBar) progBar.style.width = `${Math.max(1, Math.round((answeredCount / activeExam.questions.length) * 100))}%`;
+      if (cursorLabel) cursorLabel.textContent = `Item em exibição (${answeredCount} respondidas)`;
+
+      const finishWarn = document.getElementById(`finish-warning`);
+      if (finishWarn) finishWarn.classList.remove(`visible`);
+      const finishBtn = document.getElementById(`btn-finish-exam`);
+      if (finishBtn) {
+        finishBtn.dataset.armed = `false`;
+        finishBtn.innerHTML = `<i data-lucide="check-circle" aria-hidden="true"></i><span>Finalizar e Enviar Avaliação</span>`;
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    function selectOption(optIdx) {
+      if (!activeExam || activeExam.finished) return;
+      activeExam.answers[activeExam.currentIndex] = optIdx;
+      renderCurrentQuestion();
+      renderQuestionMap();
+    }
+
+    function prevQuestion() {
+      if (!activeExam || activeExam.currentIndex <= 0) return;
+      activeExam.currentIndex--;
+      renderCurrentQuestion();
+      renderQuestionMap();
+    }
+
+    function nextQuestion() {
+      if (!activeExam || activeExam.currentIndex >= activeExam.questions.length - 1) return;
+      activeExam.currentIndex++;
+      renderCurrentQuestion();
+      renderQuestionMap();
+    }
+
+    function jumpToQuestion(idx) {
+      if (!activeExam || idx < 0 || idx >= activeExam.questions.length) return;
+      activeExam.currentIndex = idx;
+      renderCurrentQuestion();
+      renderQuestionMap();
+    }
+
+    function renderQuestionMap() {
+      if (!activeExam) return;
+      const grid = document.getElementById(`q-map-grid`);
+      if (!grid) return;
+      grid.innerHTML = activeExam.questions.map((_, i) => {
+        const isCurrent = i === activeExam.currentIndex;
+        const isAnswered = activeExam.answers[i] !== null;
+        return `<button type="button" class="q-dot ${isAnswered ? `answered` : ``} ${isCurrent ? `current` : ``}" aria-label="Ir para item ${i + 1}" onclick="jumpToQuestion(${i})"></button>`;
+      }).join(``);
+    }
+
+    function handleFinishClick(btn) {
+      if (!activeExam || activeExam.finished) return;
+      const unanswered = activeExam.answers.filter((a) => a === null).length;
+      const warn = document.getElementById(`finish-warning`);
+
+      if (unanswered > 0 && btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `Confirmar envio (${unanswered} em branco)`;
+        if (warn) {
+          warn.textContent = `Há ${unanswered} questão(ões) sem resposta. Clique novamente no botão para confirmar o envio definitivo.`;
+          warn.classList.add(`visible`);
+        }
+        return;
+      }
+      finalizeExam();
+    }
+
+    async function finalizeExam() {
+      if (!activeExam || activeExam.finished) return;
+      activeExam.finished = true;
+      if (timerInterval) clearInterval(timerInterval);
+
+      const endDate = new Date();
+      const durationSec = Math.max(1, Math.floor((endDate.getTime() - activeExam.startTimestamp) / 1000));
+      const endTimeStr = formatClock(endDate);
+
+      let hits = 0;
+      const clusterStats = {};
+      Object.keys(CLUSTER_TOTALS).forEach((c) => {
+        clusterStats[c] = { total: CLUSTER_TOTALS[c], correct: 0, errors: 0 };
+      });
+
+      activeExam.questions.forEach((q, i) => {
+        const cluster = mapSubtopicToCluster(q.sub);
+        if (activeExam.answers[i] === q.correctIdx) {
+          hits++;
+          clusterStats[cluster].correct++;
+        } else {
+          clusterStats[cluster].errors++;
+        }
+      });
+
+      const pct = Math.round((hits / activeExam.questions.length) * 100);
+      const mencao = computeMencao(pct);
+
+      const clusterArray = Object.keys(clusterStats).map((name) => {
+        const st = clusterStats[name];
+        const cPct = st.total > 0 ? Math.round((st.correct / st.total) * 100) : 0;
+        return { name, total: st.total, correct: st.correct, errors: st.errors, pct: cPct };
+      });
+
+      const mastered = clusterArray.filter((c) => c.pct >= 75).sort((a, b) => b.pct - a.pct);
+      const reinforce = clusterArray.filter((c) => c.pct < 75).sort((a, b) => a.pct - b.pct);
+
+      const sortedByPct = [...clusterArray].sort((a, b) => b.pct - a.pct);
+      const bestTopic = sortedByPct[0];
+      const worstTopic = sortedByPct[sortedByPct.length - 1];
+
+      const diagSummary = reinforce.length === 0
+        ? `Domínio pleno em todos os eixos avaliados.`
+        : `Reforçar ${reinforce.slice(0, 2).map((r) => r.name).join(` e `)}.`;
+
+      const topicErrors = {};
+      clusterArray.forEach((c) => { topicErrors[c.name] = c.errors; });
+
+      const newRecord = {
+        id: `exam-${Date.now()}`,
+        name: activeExam.name,
+        turma: activeExam.turma,
+        scorePct: pct,
+        mencao: mencao,
+        durationSec: durationSec,
+        durationStr: formatDuration(durationSec),
+        startTime: activeExam.startTimeStr,
+        endTime: endTimeStr,
+        diagSummary: diagSummary,
+        topicErrors: topicErrors
+      };
+
+      studentRecords.push(newRecord);
+      await persistState();
+
+      renderResultScreen(newRecord, hits, mastered, reinforce, bestTopic, worstTopic);
+      showPanel(`view-student-result`);
+    }
+
+    function renderResultScreen(rec, hits, mastered, reinforce, bestTopic, worstTopic) {
+      const meta = document.getElementById(`res-student-meta`);
+      const mencaoEl = document.getElementById(`res-mencao`);
+      const descEl = document.getElementById(`res-mencao-desc`);
+      const pctEl = document.getElementById(`res-pct`);
+      const hitsEl = document.getElementById(`res-hits`);
+      const durEl = document.getElementById(`res-duration`);
+      const spanEl = document.getElementById(`res-timespan`);
+      const bestEl = document.getElementById(`res-best-topic`);
+      const bestPctEl = document.getElementById(`res-best-pct`);
+      const worstEl = document.getElementById(`res-worst-topic`);
+      const worstPctEl = document.getElementById(`res-worst-pct`);
+      const mList = document.getElementById(`res-mastered-list`);
+      const rList = document.getElementById(`res-reinforce-list`);
+
+      if (meta) meta.textContent = `${rec.name} • ${rec.turma}`;
+      if (mencaoEl) mencaoEl.textContent = rec.mencao;
+      if (descEl) descEl.textContent = getMencaoDescription(rec.mencao, rec.scorePct);
+      if (pctEl) pctEl.textContent = `${rec.scorePct}%`;
+      if (hitsEl) hitsEl.textContent = `${hits} de 100 acertos`;
+      if (durEl) durEl.textContent = rec.durationStr;
+      if (spanEl) spanEl.textContent = `Início ${rec.startTime} • Término ${rec.endTime}`;
+
+      if (bestEl && bestTopic) bestEl.textContent = bestTopic.name;
+      if (bestPctEl && bestTopic) bestPctEl.textContent = `${bestTopic.pct}% (${bestTopic.correct}/${bestTopic.total})`;
+      if (worstEl && worstTopic) worstEl.textContent = worstTopic.name;
+      if (worstPctEl && worstTopic) worstPctEl.textContent = `${worstTopic.pct}% (${worstTopic.correct}/${worstTopic.total})`;
+
+      if (mList) {
+        mList.innerHTML = mastered.length === 0
+          ? `<li class="diag-item reinforce"><span>Nenhum eixo atingiu 75% ainda. Recomenda-se revisão geral guiada.</span></li>`
+          : mastered.map((m) => `<li class="diag-item mastered"><span><strong>${escapeHtml(m.name)}</strong></span><span class="kicker">${m.pct}% (${m.correct}/${m.total})</span></li>`).join(``);
+      }
+
+      if (rList) {
+        rList.innerHTML = reinforce.length === 0
+          ? `<li class="diag-item mastered"><span>Todos os eixos foram consolidados com aproveitamento ≥ 75%.</span></li>`
+          : reinforce.map((r) => `<li class="diag-item reinforce"><span>Reforçar <strong>${escapeHtml(r.name)}</strong></span><span class="kicker">${r.pct}% (${r.correct}/${r.total})</span></li>`).join(``);
+      }
+    }
+
+    function resetToNewStudent() {
+      activeExam = null;
+      const nameInput = document.getElementById(`student-name`);
+      const classSelect = document.getElementById(`student-class`);
+      if (nameInput) nameInput.value = ``;
+      if (classSelect) classSelect.value = ``;
+      showPanel(`view-student-intro`);
+    }
+
+    // =========================================================================
+    // 9. TEACHER CONTROL PANEL (PAINEL DO PROFESSOR) & PIN VALIDATION
+    // =========================================================================
+    function openPinModal() {
+      if (professorUnlocked) {
+        switchTopView(`professor`);
+        return;
+      }
+      const modal = document.getElementById(`pin-modal`);
+      const input = document.getElementById(`prof-pin-input`);
+      const err = document.getElementById(`pin-error`);
+      if (err) err.classList.remove(`visible`);
+      if (input) input.value = ``;
+      if (modal) modal.classList.add(`open`);
+      if (input) setTimeout(() => input.focus(), 40);
+    }
+
+    function closePinModal() {
+      const modal = document.getElementById(`pin-modal`);
+      if (modal) modal.classList.remove(`open`);
+    }
+
+    function handlePinKey(e) {
+      if (e.key === `Enter`) {
+        e.preventDefault();
+        validateProfessorPin();
+      } else if (e.key === `Escape`) {
+        closePinModal();
+      }
+    }
+
+    function validateProfessorPin() {
+      const input = document.getElementById(`prof-pin-input`);
+      const err = document.getElementById(`pin-error`);
+      const entered = input ? input.value.trim() : ``;
+
+      if (entered === TEACHER_PIN) {
+        professorUnlocked = true;
+        closePinModal();
+        switchTopView(`professor`);
+      } else {
+        if (err) {
+          err.textContent = `PIN incorreto. Verifique as maiúsculas, números e símbolo (@) e tente novamente.`;
+          err.classList.add(`visible`);
+        }
+        if (input) input.focus();
+      }
+    }
+
+    function lockProfessorPanel() {
+      professorUnlocked = false;
+      switchTopView(`student`);
+    }
+
+    function getFilteredSortedRecords() {
+      const searchEl = document.getElementById(`prof-search`);
+      const classEl = document.getElementById(`prof-class-filter`);
+      const mencaoEl = document.getElementById(`prof-mencao-filter`);
+
+      const query = searchEl ? searchEl.value.trim().toLowerCase() : ``;
+      const turmaFilter = classEl ? classEl.value : `ALL`;
+      const mencaoFilter = mencaoEl ? mencaoEl.value : `ALL`;
+
+      return studentRecords
+        .filter((r) => {
+          const matchName = !query || r.name.toLowerCase().includes(query);
+          const matchClass = turmaFilter === `ALL` || r.turma === turmaFilter;
+          const matchMencao = mencaoFilter === `ALL` || r.mencao === mencaoFilter;
+          return matchName && matchClass && matchMencao;
+        })
+        .sort((a, b) => a.name.localeCompare(b.name, `pt-BR`, { sensitivity: `base` }));
+    }
+
+    function renderProfessorDashboard() {
+      const rows = getFilteredSortedRecords();
+      const classEl = document.getElementById(`prof-class-filter`);
+      const turmaLabel = classEl && classEl.value !== `ALL` ? classEl.value : `Todas as Salas`;
+
+      const kpiCount = document.getElementById(`prof-kpi-count`);
+      const kpiScope = document.getElementById(`prof-kpi-scope`);
+      const kpiAvg = document.getElementById(`prof-kpi-avg`);
+      const kpiMencao = document.getElementById(`prof-kpi-mencao`);
+      const kpiPass = document.getElementById(`prof-kpi-pass`);
+      const kpiWeak = document.getElementById(`prof-kpi-weak`);
+      const weakBars = document.getElementById(`prof-weak-bars`);
+      const replanTxt = document.getElementById(`prof-replan-recommendation`);
+      const tbody = document.getElementById(`prof-table-body`);
+
+      if (kpiCount) kpiCount.textContent = String(rows.length);
+      if (kpiScope) kpiScope.textContent = turmaLabel;
+
+      const avgPct = rows.length > 0 ? Math.round(rows.reduce((s, r) => s + r.scorePct, 0) / rows.length) : 0;
+      const avgMencao = rows.length > 0 ? computeMencao(avgPct) : `—`;
+      const passCount = rows.filter((r) => r.scorePct >= 75).length;
+      const passRate = rows.length > 0 ? Math.round((passCount / rows.length) * 100) : 0;
+
+      if (kpiAvg) kpiAvg.textContent = `${avgPct}%`;
+      if (kpiMencao) kpiMencao.textContent = `Menção média: ${avgMencao}`;
+      if (kpiPass) kpiPass.textContent = `${passRate}%`;
+
+      // Aggregate error rate by literary cluster
+      const clusterNames = Object.keys(CLUSTER_TOTALS);
+      const clusterAgg = clusterNames.map((c) => {
+        if (rows.length === 0) return { name: c, errPct: 0 };
+        const totalPossible = rows.length * CLUSTER_TOTALS[c];
+        const totalErrors = rows.reduce((sum, r) => sum + ((r.topicErrors && r.topicErrors[c]) || 0), 0);
+        const errPct = Math.round((totalErrors / totalPossible) * 100);
+        return { name: c, errPct };
+      }).sort((a, b) => b.errPct - a.errPct);
+
+      const topWeak = clusterAgg[0];
+      if (kpiWeak) kpiWeak.textContent = rows.length > 0 && topWeak ? topWeak.name : `—`;
+
+      if (weakBars) {
+        weakBars.innerHTML = rows.length === 0
+          ? `<div style="color:var(--on-surface-variant);">Nenhum registro encontrado para os filtros aplicados.</div>`
+          : clusterAgg.map((item) => {
+              const cls = item.errPct >= 45 ? `high-err` : (item.errPct >= 30 ? `mid-err` : ``);
+              return `
+                <div class="weak-bar-row">
+                  <span style="font-size:0.86rem; font-weight:500;">${escapeHtml(item.name)}</span>
+                  <div class="bar-track"><div class="bar-fill ${cls}" style="width:${item.errPct}%;"></div></div>
+                  <span class="kicker" style="text-align:right;">${item.errPct}% erro</span>
+                </div>
+              `;
+            }).join(``);
+      }
+
+      if (replanTxt) {
+        if (rows.length === 0) {
+          replanTxt.textContent = `Selecione outra turma ou limpe o filtro para visualizar orientações de replanejamento.`;
+        } else {
+          const topTwo = clusterAgg.slice(0, 2).map((x) => `${x.name} (${x.errPct}% de erro)`).join(` e `);
+          replanTxt.innerHTML = `<strong>Sugestão de Replanejamento (${escapeHtml(turmaLabel)}):</strong> Priorizar oficinas de leitura guiada e resolução de questões modelo FUVEST/ENEM nos eixos <strong>${escapeHtml(topTwo)}</strong>.`;
+        }
+      }
+
+      if (tbody) {
+        tbody.innerHTML = rows.length === 0
+          ? `<tr><td colspan="8" style="text-align:center; padding:var(--space-lg); color:var(--on-surface-variant);">Nenhum resultado encontrado para os critérios selecionados.</td></tr>`
+          : rows.map((r) => `
+              <tr>
+                <td><strong>${escapeHtml(r.name)}</strong></td>
+                <td style="white-space:nowrap;">${escapeHtml(r.turma)}</td>
+                <td class="num-cell"><strong>${r.scorePct}%</strong></td>
+                <td><span class="tag-mencao tag-${r.mencao}">${r.mencao}</span></td>
+                <td class="num-cell">${escapeHtml(r.durationStr)}</td>
+                <td class="num-cell">${escapeHtml(r.startTime)}</td>
+                <td class="num-cell">${escapeHtml(r.endTime)}</td>
+                <td>${escapeHtml(r.diagSummary)}</td>
+              </tr>
+            `).join(``);
+      }
+    }
+
+    function exportResultsCsv() {
+      const rows = getFilteredSortedRecords();
+      const headers = [`NOME`, `SALA`, `NOTA (%)`, `MENÇÃO`, `TEMPO TOTAL`, `HORA INÍCIO`, `HORA TÉRMINO`, `DIAGNÓSTICO SINTÉTICO`];
+      const csvLines = [headers.join(`;`)];
+
+      rows.forEach((r) => {
+        const line = [
+          `"${r.name.replace(/"/g, `""`)}"`,
+          `"${r.turma}"`,
+          r.scorePct,
+          r.mencao,
+          r.durationStr,
+          r.startTime,
+          r.endTime,
+          `"${r.diagSummary.replace(/"/g, `""`)}"`
+        ].join(`;`);
+        csvLines.push(line);
+      });
+
+      const csvContent = `\uFEFF` + csvLines.join(`\n`);
+      const filename = `diagnostico_literatura_etec_${new Date().toISOString().slice(0, 10)}.csv`;
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+        window.notebookAppApi.triggerFileDownload({
+          content: csvContent,
+          contentType: `text/csv`,
+          encoding: `UTF-8`,
+          filename: filename
+        });
+      } else {
+        const blob = new Blob([csvContent], { type: `text/csv;charset=utf-8;` });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement(`a`);
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    // =========================================================================
+    // 10. INITIALIZATION
+    // =========================================================================
+    (async function initApp() {
+      await loadPersistedState();
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    })();
+  </script>
+</body>
+</html>
