@@ -774,7 +774,7 @@
         </div>
 
         <div id="intro-error" class="inline-alert" role="alert"></div>
-        <div id="storage-status" class="inline-alert info visible" role="status">As avaliações concluídas serão salvas neste navegador e enviadas ao Google Forms.</div>
+        <div id="storage-status" class="inline-alert info visible" role="status">Ao concluir a avaliação, abra o Google Forms pré-preenchido e clique em Enviar para registrar o resultado.</div>
 
         <div class="rubric-strip">
           <div class="rubric-tile">
@@ -927,6 +927,10 @@
       </div>
 
       <div style="margin-top: var(--space-lg); display:flex; gap: var(--space-md); flex-wrap:wrap;" class="no-print">
+        <a id="btn-submit-google-form" class="btn btn-primary" href="#" target="_blank" rel="noopener noreferrer">
+          <i data-lucide="send" aria-hidden="true"></i>
+          <span>Revisar e Enviar ao Google Forms</span>
+        </a>
         <button type="button" class="btn btn-secondary" onclick="resetToNewStudent()">
           <i data-lucide="rotate-ccw" aria-hidden="true"></i>
           <span>Nova Aplicação (Outro Estudante)</span>
@@ -1335,22 +1339,21 @@
     // 3. RUNTIME STATE
     // =========================================================================
     const RESULTS_STORAGE_KEY = `etec-literatura-student-records-v1`;
-    const GOOGLE_FORM_RESPONSE_URL = `https://docs.google.com/forms/d/e/1FAIpQLSekshsmNRDCAaJ-_kEqIaf-cbou1zwdyZraWfkigPDs-7VM5w/formResponse`;
+    const GOOGLE_FORM_VIEW_URL = `https://docs.google.com/forms/d/e/1FAIpQLSekshsmNRDCAaJ-_kEqIaf-cbou1zwdyZraWfkigPDs-7VM5w/viewform`;
     const GOOGLE_FORM_ENTRY_IDS = {
-      id: `entry.219137183`,
-      name: `entry.472652460`,
-      turma: `entry.1066244006`,
-      scorePct: `entry.1718616897`,
-      mencao: `entry.443444655`,
-      durationSec: `entry.825404166`,
-      durationStr: `entry.1346817787`,
-      startTime: `entry.996766211`,
-      endTime: `entry.2003131105`,
-      diagSummary: `entry.905641367`,
-      topicErrors: `entry.1597115962`
+      id: `entry.513263938`,
+      name: `entry.1386401146`,
+      turma: `entry.618162929`,
+      scorePct: `entry.437763456`,
+      mencao: `entry.356674803`,
+      durationSec: `entry.297992542`,
+      durationStr: `entry.215533379`,
+      startTime: `entry.833544290`,
+      endTime: `entry.933698642`,
+      diagSummary: `entry.1994263660`,
+      topicErrors: `entry.768678869`
     };
     let studentRecords = [...INITIAL_SAMPLE_RESULTS];
-    let pendingSheetRecords = [];
     let professorUnlocked = false;
     let activeExam = null;
     let timerInterval = null;
@@ -1446,13 +1449,6 @@
           const parsedState = JSON.parse(browserState);
           if (parsedState && typeof parsedState === `object` && !Array.isArray(parsedState)) {
             if (!savedState || !Array.isArray(savedState.studentRecords)) savedState = parsedState;
-            if (
-              savedState &&
-              !Array.isArray(savedState.pendingSheetRecords) &&
-              Array.isArray(parsedState.pendingSheetRecords)
-            ) {
-              savedState.pendingSheetRecords = parsedState.pendingSheetRecords;
-            }
           }
         }
       } catch (err) {
@@ -1462,19 +1458,6 @@
 
       if (savedState && Array.isArray(savedState.studentRecords) && savedState.studentRecords.length > 0) {
         studentRecords = savedState.studentRecords;
-      }
-      if (savedState && Array.isArray(savedState.pendingSheetRecords)) {
-        pendingSheetRecords = savedState.pendingSheetRecords;
-      }
-
-      if (GOOGLE_FORM_RESPONSE_URL && pendingSheetRecords.length > 0) {
-        try {
-          await syncPendingFormRecords();
-          showStorageStatus(`Resultados pendentes enviados ao Google Forms.`, `success`);
-        } catch (err) {
-          console.error(`Não foi possível sincronizar os resultados pendentes com o Google Forms.`, err);
-          showStorageStatus(`Há resultados aguardando envio ao Google Forms: ${err.message}`, `error`);
-        }
       }
     }
 
@@ -1498,8 +1481,7 @@
 
     async function savePersistedState() {
       const savedState = {
-        studentRecords: studentRecords,
-        pendingSheetRecords: pendingSheetRecords
+        studentRecords: studentRecords
       };
       const errors = [];
 
@@ -1522,130 +1504,28 @@
       return errors;
     }
 
-    function submitRecordToGoogleForm(record) {
-      if (!GOOGLE_FORM_RESPONSE_URL) {
-        return Promise.reject(new Error(`A integração com o Google Forms ainda não foi configurada.`));
-      }
-
-      let endpoint;
-      try {
-        endpoint = new URL(GOOGLE_FORM_RESPONSE_URL);
-      } catch (err) {
-        return Promise.reject(new Error(`O endereço do Google Forms é inválido.`));
-      }
-      if (
-        endpoint.protocol !== `https:` ||
-        endpoint.hostname !== `docs.google.com` ||
-        !endpoint.pathname.startsWith(`/forms/d/e/`) ||
-        !endpoint.pathname.endsWith(`/formResponse`)
-      ) {
-        return Promise.reject(new Error(`Use o endereço /formResponse do Google Forms.`));
-      }
-
-      return new Promise((resolve, reject) => {
-        const frameName = `google-form-submit-${record.id}`;
-        const frame = document.createElement(`iframe`);
-        const form = document.createElement(`form`);
-        const timeout = setTimeout(() => finish(new Error(`O Google Forms não respondeu em 20 segundos.`)), 20000);
-
-        frame.name = frameName;
-        frame.title = `Envio ao Google Forms`;
-        frame.hidden = true;
-        form.method = `POST`;
-        form.action = endpoint.href;
-        form.target = frameName;
-        form.hidden = true;
-
-        const hiddenFields = {
-          fvv: `1`,
-          pageHistory: `0`,
-          submissionTimestamp: `-1`
-        };
-        Object.entries(hiddenFields).forEach(([name, value]) => {
-          const input = document.createElement(`input`);
-          input.type = `hidden`;
-          input.name = name;
-          input.value = value;
-          form.appendChild(input);
-        });
-
-        const values = {
-          [GOOGLE_FORM_ENTRY_IDS.id]: record.id,
-          [GOOGLE_FORM_ENTRY_IDS.name]: record.name,
-          [GOOGLE_FORM_ENTRY_IDS.turma]: record.turma,
-          [GOOGLE_FORM_ENTRY_IDS.scorePct]: String(record.scorePct),
-          [GOOGLE_FORM_ENTRY_IDS.mencao]: record.mencao,
-          [GOOGLE_FORM_ENTRY_IDS.durationSec]: String(record.durationSec),
-          [GOOGLE_FORM_ENTRY_IDS.durationStr]: record.durationStr,
-          [GOOGLE_FORM_ENTRY_IDS.startTime]: record.startTime,
-          [GOOGLE_FORM_ENTRY_IDS.endTime]: record.endTime,
-          [GOOGLE_FORM_ENTRY_IDS.diagSummary]: record.diagSummary,
-          [GOOGLE_FORM_ENTRY_IDS.topicErrors]: JSON.stringify(record.topicErrors || {})
-        };
-        Object.entries(values).forEach(([name, value]) => {
-          const input = document.createElement(`input`);
-          input.type = `hidden`;
-          input.name = name;
-          input.value = value;
-          form.appendChild(input);
-        });
-
-        function finish(error) {
-          clearTimeout(timeout);
-          frame.removeEventListener(`load`, handleResponse);
-          form.remove();
-          frame.remove();
-          if (error) reject(error);
-          else resolve();
-        }
-
-        function handleResponse() {
-          try {
-            if (frame.contentWindow.location.href === `about:blank`) return;
-          } catch (err) {
-            finish();
-            return;
-          }
-          finish();
-        }
-
-        frame.addEventListener(`load`, handleResponse);
-        document.body.append(frame, form);
-        try {
-          form.submit();
-        } catch (err) {
-          finish(new Error(`Não foi possível enviar o resultado ao Google Forms.`));
-        }
-      });
+    function buildGoogleFormPrefillUrl(record) {
+      const formUrl = new URL(GOOGLE_FORM_VIEW_URL);
+      formUrl.searchParams.set(`usp`, `pp_url`);
+      const values = {
+        [GOOGLE_FORM_ENTRY_IDS.id]: record.id,
+        [GOOGLE_FORM_ENTRY_IDS.name]: record.name,
+        [GOOGLE_FORM_ENTRY_IDS.turma]: record.turma,
+        [GOOGLE_FORM_ENTRY_IDS.scorePct]: String(record.scorePct),
+        [GOOGLE_FORM_ENTRY_IDS.mencao]: record.mencao,
+        [GOOGLE_FORM_ENTRY_IDS.durationSec]: String(record.durationSec),
+        [GOOGLE_FORM_ENTRY_IDS.durationStr]: record.durationStr,
+        [GOOGLE_FORM_ENTRY_IDS.startTime]: record.startTime,
+        [GOOGLE_FORM_ENTRY_IDS.endTime]: record.endTime,
+        [GOOGLE_FORM_ENTRY_IDS.diagSummary]: record.diagSummary,
+        [GOOGLE_FORM_ENTRY_IDS.topicErrors]: JSON.stringify(record.topicErrors || {})
+      };
+      Object.entries(values).forEach(([entryId, value]) => formUrl.searchParams.set(entryId, value));
+      return formUrl.href;
     }
 
-    async function syncPendingFormRecords() {
-      for (const record of [...pendingSheetRecords]) {
-        await submitRecordToGoogleForm(record);
-        pendingSheetRecords = pendingSheetRecords.filter((pending) => pending.id !== record.id);
-        const errors = await savePersistedState();
-        if (errors.length > 0) {
-          throw new Error(`O resultado foi enviado, mas não foi possível atualizar o registro local ${errors.join(` e `)}.`);
-        }
-      }
-    }
-
-    async function persistState(record) {
-      if (record && !pendingSheetRecords.some((pending) => pending.id === record.id)) {
-        pendingSheetRecords.push(record);
-      }
-
-      const storageErrors = await savePersistedState();
-      let formError = null;
-      if (GOOGLE_FORM_RESPONSE_URL) {
-        try {
-          await syncPendingFormRecords();
-        } catch (err) {
-          formError = err;
-          console.error(`Não foi possível enviar o resultado ao Google Forms.`, err);
-        }
-      }
-      return { storageErrors, formError };
+    async function persistState() {
+      return savePersistedState();
     }
 
     // =========================================================================
@@ -1978,17 +1858,15 @@
       };
 
       studentRecords.push(newRecord);
-      const saveResult = await persistState(newRecord);
+      const storageErrors = await persistState();
 
       renderResultScreen(newRecord, hits, mastered, reinforce, bestTopic, worstTopic);
-      if (saveResult.formError) {
-        showResultSaveStatus(`Resultado guardado localmente, mas não enviado ao Google Forms: ${saveResult.formError.message}`, `error`);
-      } else if (GOOGLE_FORM_RESPONSE_URL) {
-        showResultSaveStatus(`Solicitação enviada ao Google Forms. Confira se os dados apareceram na aba Respostas.`, `info`);
-      } else if (saveResult.storageErrors.length > 0) {
-        showResultSaveStatus(`Atenção: não foi possível salvar o resultado ${saveResult.storageErrors.join(` e `)}.`, `error`);
+      const formLink = document.getElementById(`btn-submit-google-form`);
+      if (formLink) formLink.href = buildGoogleFormPrefillUrl(newRecord);
+      if (storageErrors.length > 0) {
+        showResultSaveStatus(`Não foi possível salvar o resultado ${storageErrors.join(` e `)}. Abra o formulário e envie os dados para registrá-los.`, `error`);
       } else {
-        showResultSaveStatus(`Resultado salvo neste navegador. O envio ao Google Forms ainda precisa ser configurado.`, `info`);
+        showResultSaveStatus(`Resultado salvo neste navegador. Para registrá-lo no Google Forms, abra o formulário pré-preenchido e clique em Enviar.`, `info`);
       }
       showPanel(`view-student-result`);
     }
